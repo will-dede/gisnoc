@@ -25,7 +25,7 @@
                 <x-input-error :messages="$errors->get('tel_mecano')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <x-input-label for="est_proprietaire" :value="'Propriétaire du site ?'" />
+                <x-input-label for="est_proprietaire" :value="'Responsable de la zone ?'" />
                 <select id="est_proprietaire" name="est_proprietaire" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                     <option value="0" {{ old('est_proprietaire') == '0' ? 'selected' : '' }}>Non</option>
                     <option value="1" {{ old('est_proprietaire') == '1' ? 'selected' : '' }}>Oui</option>

@@ -28,12 +28,23 @@ class SiteController extends Controller
         // Recherche
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nom_site', 'like', "%{$search}%")
-                  ->orWhere('ip3G', 'like', "%{$search}%")
-                  ->orWhere('ip4G', 'like', "%{$search}%")
-                  ->orWhere('nodeName', 'like', "%{$search}%");
-            });
+            $searchType = $request->get('search_type', 'all');
+            
+            if ($searchType === 'all') {
+                // Recherche dans tous les champs
+                $query->where(function($q) use ($search) {
+                    $q->where('nom_site', 'like', "%{$search}%")
+                      ->orWhere('ip3G', 'like', "%{$search}%")
+                      ->orWhere('ip4G', 'like', "%{$search}%")
+                      ->orWhere('nodeName', 'like', "%{$search}%")
+                      ->orWhere('cell2G', 'like', "%{$search}%")
+                      ->orWhere('cell3G', 'like', "%{$search}%")
+                      ->orWhere('cell4G', 'like', "%{$search}%");
+                });
+            } else {
+                // Recherche ciblée
+                $query->where($searchType, 'like', "%{$search}%");
+            }
         }
 
         // Tri

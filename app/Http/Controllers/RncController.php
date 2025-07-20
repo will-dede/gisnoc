@@ -14,10 +14,20 @@ class RncController extends Controller
     const ERROR_GENERAL = 'Une erreur est survenue : ';
 
     // Affiche la liste des RNC
-    public function index()
+    public function index(Request $request)
     {
-        $rncs = Rnc::all();
-        // $rncs = Rnc::paginate(10); // Pour la pagination
+        $query = Rnc::query();
+
+        // Recherche
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('nom_rnc', 'like', "%{$search}%");
+        }
+
+        // Tri alphabétique par défaut
+        $query->orderBy('nom_rnc');
+
+        $rncs = $query->get();
         return view('rncs.index', compact('rncs'));
     }
 

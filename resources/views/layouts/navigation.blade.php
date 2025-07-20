@@ -79,9 +79,13 @@
                                 <x-dropdown-link :href="route('techniciens.index')">
                                     <i class="fas fa-user-cog mr-2"></i> Techniciens
                                 </x-dropdown-link>
-                                <x-dropdown-link :href="route('mecaniciens.index')">
-                                    <i class="fas fa-tools mr-2"></i> Mécaniciens
-                                </x-dropdown-link>
+                                
+                                {{-- A afficher lorsqu'il y aura besoin de gérer les mécaniciens --}}
+                                {{--
+                                    <x-dropdown-link :href="route('mecaniciens.index')">
+                                        <i class="fas fa-tools mr-2"></i> Mécaniciens
+                                    </x-dropdown-link>
+                                --}}
                                 <x-dropdown-link :href="route('typealarme.index')">
                                     <i class="fas fa-bell mr-2"></i> Types d'alarme
                                 </x-dropdown-link>
@@ -214,9 +218,13 @@
                     <x-dropdown-link :href="route('techniciens.index')">
                         <i class="fas fa-user-cog mr-2"></i> Techniciens
                     </x-dropdown-link>
-                    <x-dropdown-link :href="route('mecaniciens.index')">
-                        <i class="fas fa-tools mr-2"></i> Mécaniciens
-                    </x-dropdown-link>
+
+                    {{-- A afficher lorsqu'il y aura besoin de gérer les mécaniciens --}}
+                    {{-- 
+                        <x-dropdown-link :href="route('mecaniciens.index')">
+                            <i class="fas fa-tools mr-2"></i> Mécaniciens
+                        </x-dropdown-link>
+                    --}}
                     <x-dropdown-link :href="route('typealarme.index')">
                         <i class="fas fa-bell mr-2"></i> Types d'alarme
                     </x-dropdown-link>

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('bsc_id')->constrained('bscs');
             $table->foreignId('type_site_id')->constrained('type_sites');
             $table->foreignId('zone_maintenance_id')->constrained('zone_maintenances');
+            $table->foreignId('region_id')->constrained('regions');
             $table->timestamps();
         });
     }

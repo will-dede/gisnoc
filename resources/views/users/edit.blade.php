@@ -29,7 +29,7 @@
                         <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Administrateur</option>
                     </select>
                 </div>
-                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full">Enregistrer</button>
+                <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full">Mettre à jour</button>
                 <a href="{{ route('users.index') }}" class="mt-4 inline-block text-blue-600 hover:underline w-full text-center">Annuler</a>
             </form>
         </div>

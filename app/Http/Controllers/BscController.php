@@ -14,10 +14,20 @@ class BscController extends Controller
     const ERROR_GENERAL = 'Une erreur est survenue : ';
 
     // Affiche la liste des BSC
-    public function index()
+    public function index(Request $request)
     {
-        $bscs = Bsc::all();
-        // $bscs = Bsc::paginate(10); // Pour la pagination
+        $query = Bsc::query();
+
+        // Recherche
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('nom_bsc', 'like', "%{$search}%");
+        }
+
+        // Tri alphabétique par défaut
+        $query->orderBy('nom_bsc');
+
+        $bscs = $query->get();
         return view('bscs.index', compact('bscs'));
     }
 

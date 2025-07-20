@@ -26,12 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{user}/refuse', [\App\Http\Controllers\UserController::class, 'refuseUser'])->name('users.refuse');
     Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 
-    // Routes pour la gestion des régions
     Route::resource('regions', \App\Http\Controllers\RegionController::class);
     Route::resource('secteurs', \App\Http\Controllers\SecteurController::class);
     Route::resource('sites', \App\Http\Controllers\SiteController::class);
     Route::resource('techniciens', \App\Http\Controllers\TechnicienController::class);
-    Route::resource('mecaniciens', \App\Http\Controllers\MecanicienController::class);
+    // Route::resource('mecaniciens', \App\Http\Controllers\MecanicienController::class);
     Route::resource('incidents', \App\Http\Controllers\IncidentController::class);
     Route::resource('frequences', \App\Http\Controllers\FrequenceController::class);
     Route::resource('bscs', \App\Http\Controllers\BscController::class);
