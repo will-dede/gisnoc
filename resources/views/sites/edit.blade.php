@@ -14,14 +14,16 @@
             <!-- Nom du site et NodeType -->
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <x-input-label for="nom_site" :value="'Nom du site'" />
-                    <span class="text-red-500">*</span>
+                    <label for="nom_site" class="block font-medium text-sm text-gray-700">
+                        Nom du site <span class="text-red-500">*</span>
+                    </label>
                     <x-text-input id="nom_site" name="nom_site" type="text" class="block mt-1 w-full" :value="old('nom_site', $site->nom_site)" required autofocus />
                     <x-input-error :messages="$errors->get('nom_site')" class="mt-2" />
                 </div>
                 <div>
-                    <x-input-label for="type_site_id" :value="'NodeType'" />
-                    <span class="text-red-500">*</span>
+                    <label for="type_site_id" class="block font-medium text-sm text-gray-700">
+                        NodeType <span class="text-red-500">*</span>
+                    </label>
                     <select id="type_site_id" name="type_site_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                         <option value="">Sélectionner un type</option>
                         @foreach($type_sites as $type)
@@ -77,8 +79,9 @@
             <!-- BSC et RNC -->
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <x-input-label for="bsc_id" :value="'BSC'" />
-                    <span class="text-red-500">*</span>
+                    <label for="bsc_id" class="block font-medium text-sm text-gray-700">
+                        BSC <span class="text-red-500">*</span>
+                    </label>
                     <select id="bsc_id" name="bsc_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                         <option value="">Sélectionner un BSC</option>
                         @foreach($bscs as $bsc)
@@ -88,8 +91,9 @@
                     <x-input-error :messages="$errors->get('bsc_id')" class="mt-2" />
                 </div>
                 <div>
-                    <x-input-label for="rnc_id" :value="'RNC'" />
-                    <span class="text-red-500">*</span>
+                    <label for="rnc_id" class="block font-medium text-sm text-gray-700">
+                        RNC <span class="text-red-500">*</span>
+                    </label>
                     <select id="rnc_id" name="rnc_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                         <option value="">Sélectionner un RNC</option>
                         @foreach($rncs as $rnc)
@@ -103,8 +107,9 @@
             <!-- Zone de maintenance et Région -->
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <x-input-label for="zone_maintenance_id" :value="'Zone de maintenance'" />
-                    <span class="text-red-500">*</span>
+                    <label for="zone_maintenance_id" class="block font-medium text-sm text-gray-700">
+                        Zone de maintenance <span class="text-red-500">*</span>
+                    </label>
                     <select id="zone_maintenance_id" name="zone_maintenance_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                         <option value="">Sélectionner une zone</option>
                         @foreach($zones as $zone)
@@ -114,8 +119,9 @@
                     <x-input-error :messages="$errors->get('zone_maintenance_id')" class="mt-2" />
                 </div>
                 <div>
-                    <x-input-label for="region_id" :value="'Région'" />
-                    <span class="text-red-500">*</span>
+                    <label for="region_id" class="block font-medium text-sm text-gray-700">
+                        Région <span class="text-red-500">*</span>
+                    </label>
                     <select id="region_id" name="region_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                         <option value="">Sélectionner une région</option>
                         @foreach($regions as $region)

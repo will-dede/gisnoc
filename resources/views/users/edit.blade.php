@@ -6,11 +6,11 @@
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="lastname" class="block font-semibold">Nom</label>
+                    <label for="lastname" class="block font-semibold">Nom <span class="text-red-500">*</span></label>
                     <input type="text" name="lastname" id="lastname" value="{{ old('lastname', $user->lastname) }}" class="border rounded px-2 py-1 w-full" required />
                 </div>
                 <div class="mb-4">
-                    <label for="firstname" class="block font-semibold">Prénom</label>
+                    <label for="firstname" class="block font-semibold">Prénom <span class="text-red-500">*</span></label>
                     <input type="text" name="firstname" id="firstname" value="{{ old('firstname', $user->firstname) }}" class="border rounded px-2 py-1 w-full" required />
                 </div>
                 <div class="mb-4">
@@ -18,11 +18,11 @@
                     <input type="text" name="telephone" id="telephone" value="{{ old('telephone', $user->telephone) }}" class="border rounded px-2 py-1 w-full" />
                 </div>
                 <div class="mb-4">
-                    <label for="email" class="block font-semibold">Email</label>
+                    <label for="email" class="block font-semibold">Email <span class="text-red-500">*</span></label>
                     <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="border rounded px-2 py-1 w-full" required />
                 </div>
                 <div class="mb-4">
-                    <label for="role" class="block font-semibold">Rôle</label>
+                    <label for="role" class="block font-semibold">Rôle <span class="text-red-500">*</span></label>
                     <select name="role" id="role" class="border rounded px-2 py-1 w-full" required>
                         <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>Utilisateur</option>
                         <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrateur</option>

@@ -111,16 +111,50 @@
                     </div>
 
                     <!-- Technologies -->
-                    @if($site->technologies->count() > 0)
-                        <div class="mb-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-3">Technologies</h3>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($site->technologies as $tech)
-                                    <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">{{ $tech->nom_technologie }}</span>
-                                @endforeach
-                            </div>
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-medium text-gray-900">Technologies installées</h3>
+                            <a href="{{ route('sitetechnologie.create', $site) }}" class="text-blue-600 hover:text-blue-900 flex items-center">
+                                <i class="fas fa-plus mr-1"></i> Ajouter
+                            </a>
                         </div>
-                    @endif
+                        @if(session('success'))
+                            <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
+                        @endif
+                        @if($site->technologies->count() > 0)
+                            <div class="overflow-x-auto custom-scrollbar">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technologie</th>
+                                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach($site->technologies as $technologie)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $technologie->nom_technologie }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <form action="{{ route('site-technologies.destroy', [$site, $technologie]) }}" method="POST" onsubmit="return confirm('Détacher cette technologie ?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-900" title="Détacher">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <p class="text-gray-500 text-sm">Aucune technologie associée à ce site.</p>
+                        @endif
+                    </div>
 
                     <!-- Incidents -->
                     @if($site->incidents->count() > 0)

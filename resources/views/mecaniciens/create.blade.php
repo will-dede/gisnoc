@@ -10,22 +10,30 @@
                 <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
             @endif
             <div>
-                <x-input-label for="nom_mecano" :value="'Nom'" />
+                <label for="nom_mecano" class="block font-medium text-sm text-gray-700">
+                    Nom <span class="text-red-500">*</span>
+                </label>
                 <x-text-input id="nom_mecano" name="nom_mecano" type="text" class="block mt-1 w-full" :value="old('nom_mecano')" required autofocus />
                 <x-input-error :messages="$errors->get('nom_mecano')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <x-input-label for="prenom_mecano" :value="'Prénom'" />
+                <label for="prenom_mecano" class="block font-medium text-sm text-gray-700">
+                    Prénom <span class="text-red-500">*</span>
+                </label>
                 <x-text-input id="prenom_mecano" name="prenom_mecano" type="text" class="block mt-1 w-full" :value="old('prenom_mecano')" required />
                 <x-input-error :messages="$errors->get('prenom_mecano')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <x-input-label for="tel_mecano" :value="'Téléphone'" />
+                <label for="tel_mecano" class="block font-medium text-sm text-gray-700">
+                    Téléphone <span class="text-red-500">*</span>
+                </label>
                 <x-text-input id="tel_mecano" name="tel_mecano" type="text" class="block mt-1 w-full" :value="old('tel_mecano')" required />
                 <x-input-error :messages="$errors->get('tel_mecano')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <x-input-label for="est_proprietaire" :value="'Responsable de la zone ?'" />
+                <label for="est_proprietaire" class="block font-medium text-sm text-gray-700">
+                    Propriétaire du site ? <span class="text-red-500">*</span>
+                </label>
                 <select id="est_proprietaire" name="est_proprietaire" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                     <option value="0" {{ old('est_proprietaire') == '0' ? 'selected' : '' }}>Non</option>
                     <option value="1" {{ old('est_proprietaire') == '1' ? 'selected' : '' }}>Oui</option>
@@ -33,7 +41,9 @@
                 <x-input-error :messages="$errors->get('est_proprietaire')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <x-input-label for="zone_maintenance_id" :value="'Zone de maintenance'" />
+                <label for="zone_maintenance_id" class="block font-medium text-sm text-gray-700">
+                    Zone de maintenance <span class="text-red-500">*</span>
+                </label>
                 <select id="zone_maintenance_id" name="zone_maintenance_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                     <option value="">Sélectionner une zone</option>
                     @foreach($zones as $zone)

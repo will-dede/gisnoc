@@ -11,7 +11,7 @@
                 <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
             @endif
             <div>
-                <x-input-label for="nom_region" :value="'Nom de la région'" />
+                <label for="nom_region" class="block font-medium text-sm text-gray-700">Nom de la région <span class="text-red-500">*</span></label>
                 <x-text-input id="nom_region" name="nom_region" type="text" class="block mt-1 w-full" :value="old('nom_region', $region->nom_region)" required autofocus />
                 <x-input-error :messages="$errors->get('nom_region')" class="mt-2" />
             </div>

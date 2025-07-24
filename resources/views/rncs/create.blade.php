@@ -10,7 +10,7 @@
                 <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
             @endif
             <div>
-                <x-input-label for="nom_rnc" :value="'Nom du RNC'" />
+                <label for="nom_rnc" class="block font-medium text-sm text-gray-700">Nom du RNC <span class="text-red-500">*</span></label>
                 <x-text-input id="nom_rnc" name="nom_rnc" type="text" class="block mt-1 w-full" :value="old('nom_rnc')" required autofocus />
                 <x-input-error :messages="$errors->get('nom_rnc')" class="mt-2" />
             </div>
