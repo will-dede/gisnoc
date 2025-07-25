@@ -3,7 +3,10 @@
         <div class="w-full max-w-xl mx-auto">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <h1 class="text-2xl font-bold mb-4">Liste des régions</h1>
-                <a href="{{ route('regions.create') }}" class="mb-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ajouter une région</a>
+                <a href="{{ route('regions.create') }}" class="mb-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Ajouter une région</span>
+                </a>
             </div>
             @if(session('success'))
                 <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
@@ -23,8 +26,16 @@
                         <tr>
                             <td class="border px-2 py-1">{{ $region->nom_region }}</td>
                             <td class="border px-2 py-1">
-                                <a href="{{ route('regions.show', $region) }}" class="text-blue-600 hover:underline">Voir</a>
-                                <a href="{{ route('regions.edit', $region) }}" class="ml-2 text-green-600 hover:underline">Modifier</a>
+                                <div class="flex space-x-4 justify-center font-bold">
+                                    <a href="{{ route('regions.show', $region) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
+                                        <i class="fas fa-eye text-sm"></i>
+                                        <span class="text-sm">Détails</span>
+                                    </a>
+                                    <a href="{{ route('regions.edit', $region) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
+                                        <i class="fas fa-edit text-sm"></i>
+                                        <span class="text-sm">Modifier</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

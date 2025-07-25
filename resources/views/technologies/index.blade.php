@@ -31,12 +31,14 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $technologie->sites_count }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $technologie->frequences_count }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-4 justify-center">
-                                    <a href="{{ route('technologies.show', $technologie) }}" class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-eye text-xl"></i>
+                                <div class="flex space-x-4 justify-center font-bold">
+                                    <a href="{{ route('technologie.show', $technologie) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
+                                        <i class="fas fa-eye text-xs"></i>
+                                        <span class="text-xs">Détails</span>
                                     </a>
-                                    <a href="{{ route('technologies.edit', $technologie) }}" class="text-yellow-600 hover:text-yellow-900">
-                                        <i class="fas fa-edit text-xl"></i>
+                                    <a href="{{ route('technologie.edit', $technologie) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
+                                        <i class="fas fa-edit text-xs"></i>
+                                        <span class="text-xs">Modifier</span>
                                     </a>
                                 </div>
                             </td>

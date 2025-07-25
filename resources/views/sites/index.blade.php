@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des sites</h1>
-                <a href="{{ route('sites.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ajouter un site</a>
+                <a href="{{ route('sites.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-plus text-sm"></i> Ajouter un site</a>
             </div>
             <form method="GET" action="" class="mb-4 flex gap-2">
                     {{-- A afficher plus tard... --}}
@@ -73,9 +73,15 @@
                                 <td class="border px-2 py-1 text-sm uppercase">{{ $site->bsc->nom_bsc ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-sm uppercase">{{ $site->rnc->nom_rnc ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-sm uppercase">{{ $site->zoneMaintenance->nom_zone ?? '-' }}</td>
-                                <td class="border px-1 py-1 text-center text-xs">
-                                    <a href="{{ route('sites.show', $site) }}" class="text-blue-600 hover:text-blue-800">Détails</a>
-                                    <a href="{{ route('sites.edit', $site) }}" class="ml-2 text-green-600 hover:text-green-800">Modifier</a>
+                                <td class="border px-1 py-1 text-center text-xs font-bold">
+                                    <div class="flex space-x-4 justify-center font-bold">
+                                        <a href="{{ route('sites.show', $site) }}" class="text-blue-600 hover:text-blue-800">
+                                            <i class="fas fa-eye text-sm"></i><br>Détails
+                                        </a>
+                                        <a href="{{ route('sites.edit', $site) }}" class="ml-2 text-green-600 hover:text-green-800">
+                                        <i class="fas fa-edit text-sm"></i><br>Modifier
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

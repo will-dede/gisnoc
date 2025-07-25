@@ -40,7 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('technologie', \App\Http\Controllers\TechnologieController::class);
     Route::resource('zonemaintenance', \App\Http\Controllers\ZoneMaintenanceController::class);
     Route::resource('siteincident', \App\Http\Controllers\SiteIncidentController::class);
-    Route::resource('sitetechnologie', \App\Http\Controllers\SiteTechnologieController::class);
+    Route::resource('sites.technologies', \App\Http\Controllers\SiteTechnologieController::class);
     Route::resource('secteurincident', \App\Http\Controllers\SecteurIncidentController::class);
 });
 

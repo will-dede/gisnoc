@@ -114,7 +114,7 @@
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-medium text-gray-900">Technologies installées</h3>
-                            <a href="{{ route('sitetechnologie.create', $site) }}" class="text-blue-600 hover:text-blue-900 flex items-center">
+                            <a href="{{ route('sites.technologies.create', $site) }}" class="text-blue-600 hover:text-blue-900 flex items-center">
                                 <i class="fas fa-plus mr-1"></i> Ajouter
                             </a>
                         </div>
@@ -138,7 +138,7 @@
                                             <tr>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $technologie->nom_technologie }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                                    <form action="{{ route('site-technologies.destroy', [$site, $technologie]) }}" method="POST" onsubmit="return confirm('Détacher cette technologie ?')">
+                                                    <form action="{{ route('sites.technologies.destroy', [$site, $technologie]) }}" method="POST" onsubmit="return confirm('Détacher cette technologie ?')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-900" title="Détacher">

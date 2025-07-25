@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="w-full max-w-md mx-auto mt-10">
-        <form method="POST" action="{{ route('technologies.update', $technologie) }}" class="bg-white shadow rounded p-8">
+        <form method="POST" action="{{ route('technologie.update', $technologie) }}" class="bg-white shadow rounded p-8">
             @csrf
             @method('PUT')
             <h1 class="text-2xl font-bold mb-6 text-center">Modifier la technologie</h1>
@@ -16,7 +16,7 @@
                 <x-input-error :messages="$errors->get('nom_technologie')" class="mt-2" />
             </div>
             <div class="flex items-center justify-end mt-4">
-                <a href="{{ route('technologies.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Annuler</a>
+                <a href="{{ route('technologie.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Annuler</a>
                 <x-primary-button class="ms-4">Mettre à jour</x-primary-button>
             </div>
         </form>

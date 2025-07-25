@@ -40,6 +40,41 @@
                     </div>
                 </div>
             </div>
+            @if($bsc->sites && $bsc->sites->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border">
+                        <thead>
+                            <tr>
+                                <th class="border px-2 py-1">ID</th>
+                                <th class="border px-2 py-1">Nom du site</th>
+                                <th class="border px-2 py-1">NodeType</th>
+                                <th class="border px-2 py-1">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($bsc->sites as $site)
+                                <tr>
+                                    <td class="border px-2 py-1 text-sm text-gray-500">{{ $site->id }}</td>
+                                    <td class="border px-2 py-1 text-sm text-gray-900">{{ $site->nom_site }}</td>
+                                    <td class="border px-2 py-1 text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '' }}</td>
+                                    <td class="border px-2 py-1 text-center">
+                                        <div class="flex space-x-4 justify-center font-bold">
+                                            <a href="{{ route('sites.show', $site) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
+                                                <i class="fas fa-eye text-sm"></i>
+                                                <span class="text-sm">Détails</span>
+                                            </a>
+                                            <a href="{{ route('sites.edit', $site) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
+                                                <i class="fas fa-edit text-sm"></i>
+                                                <span class="text-sm">Modifier</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
             <div class="mt-6">
                 <a href="{{ route('bscs.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
                     <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des BSC

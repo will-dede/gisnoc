@@ -137,7 +137,7 @@
             <!-- Technologies -->
             @if($technologies->count() > 0)
                 <div class="mb-6">
-                    <x-input-label :value="'Technologies'" />
+                    <label class="block font-medium text-sm text-gray-700">Technologies installées sur le site</label>
                     <div class="mt-2 grid grid-cols-3 gap-2">
                         @foreach($technologies as $tech)
                             <label class="flex items-center">

@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="w-full max-w-md mx-auto mt-10">
-        <form method="POST" action="{{ route('sitetechnologie.store', $site) }}" class="bg-white shadow rounded p-8">
+        <form method="POST" action="{{ route('sites.technologies.store', $site) }}" class="bg-white shadow rounded p-8">
             @csrf
             <h1 class="text-2xl font-bold mb-6 text-center">Associer une technologie au site</h1>
             @if(session('success'))

@@ -62,35 +62,48 @@
 
                     @if($region->sites && $region->sites->count() > 0)
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full bg-white border">
+                                <thead>
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom du site</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom du site (avec lien)</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NodeType</th>
-                                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th class="border px-2 py-1">N°</th>
+                                        <th class="border px-2 py-1">Nom du site</th>
+                                        <th class="border px-2 py-1">Cellules</th>
+                                        <th class="border px-2 py-1">NodeName</th>
+                                        <th class="border px-2 py-1">Node<br>Type</th>
+                                        <th class="border px-2 py-1">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody>
+                                    @php
+                                        $i = 1;
+                                    @endphp
                                     @foreach($region->sites as $site)
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $site->id }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $site->nom_site }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                <a href="{{route('sites.show', $site)}}" class="text-gray-600 hover:text-gray-900">
+                                            <td class="border px-2 py-1 text-center text-base text-gray-500">{{ $i++ }}</td>
+                                            <td class="border px-2 py-1 text-base text-gray-900">
+                                                <a href="{{ route('sites.show', $site) }}" class="text-gray-700 hover:text-blue-900">
                                                     {{ $site->nom_site }}
                                                 </a>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <div class="flex space-x-4 text-center">
-                                                    <div class="flex flex-col items-center">
-                                                        <a href="{{ route('sites.show', $site) }}" class="flex flex-col items-center text-center text-blue-600 hover:text-blue-900">
-                                                            <i class="fas fa-eye text-xl mb-1"></i>
-                                                            <span class="text-xs">Voir le site</span>
-                                                        </a>
-                                                    </div>
+                                            <td class="border px-2 py-1 text-sm text-gray-900">
+                                                @if($site->cell2G)
+                                                    <div class="text-sm">2G: {{ $site->cell2G }}</div>
+                                                @endif
+                                                @if($site->cell3G)
+                                                    <div class="text-sm">3G: {{ $site->cell3G }}</div>
+                                                @endif
+                                                @if($site->cell4G)
+                                                    <div class="text-sm">4G: {{ $site->cell4G }}</div>
+                                                @endif
+                                            </td>
+                                            <td class="border px-2 py-1 text-sm text-gray-900">{{ $site->nodeName ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center">
+                                                <div class="flex space-x-4 justify-center font-bold">
+                                                    <a href="{{ route('sites.show', $site) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
+                                                        <i class="fas fa-eye text-sm"></i>
+                                                        <span class="text-sm">Détails</span>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

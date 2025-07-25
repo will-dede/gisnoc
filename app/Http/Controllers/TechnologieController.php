@@ -33,7 +33,7 @@ class TechnologieController extends Controller
         
         try {
             Technologie::create($validatedData);
-            return redirect()->route('technologies.create')
+            return redirect()->route('technologie.index')
                 ->with('success', self::SUCCESS_CREATE);
         } catch (\Exception $e) {
             return redirect()->back()
@@ -64,7 +64,7 @@ class TechnologieController extends Controller
         
         try {
             $technologie->update($validatedData);
-            return redirect()->route('technologies.index')
+            return redirect()->route('technologie.index')
                 ->with('success', self::SUCCESS_UPDATE);
         } catch (\Exception $e) {
             return redirect()->back()
@@ -78,7 +78,7 @@ class TechnologieController extends Controller
     {
         try {
             $technologie->delete();
-            return redirect()->route('technologies.index')
+            return redirect()->route('technologie.index')
                 ->with('success', self::SUCCESS_DELETE);
         } catch (\Exception $e) {
             return redirect()->back()

@@ -6,7 +6,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détails de la technologie</h1>
                         <div class="flex space-x-2">
-                            <a href="{{ route('technologies.edit', $technologie) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
+                            <a href="{{ route('technologie.edit', $technologie) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
                                 <span class="text-xs">Modifier</span>
                             </a>
@@ -49,7 +49,7 @@
                     <p>Êtes-vous sûr de vouloir supprimer cette technologie ?</p>
                     <div class="mt-6 flex justify-end space-x-4">
                         <button onclick="document.getElementById('deleteModal').classList.add('hidden')" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Annuler</button>
-                        <form method="POST" action="{{ route('technologies.destroy', $technologie) }}">
+                        <form method="POST" action="{{ route('technologie.destroy', $technologie) }}">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Supprimer</button>

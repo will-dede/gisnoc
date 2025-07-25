@@ -4,9 +4,9 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
+                <div class="shrink-0 flex items-center bg-primary">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                        <img src="{{ asset('assets/img/GISNOC_Logo.png') }}" alt="Logo GISNOC" class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
@@ -48,7 +48,7 @@
                     {{-- <x-nav-link :href="route('secteurincident.index')" :active="request()->routeIs('secteurincident.*')">Incidents secteur</x-nav-link> --}}
 
                     {{-- Dropdown Informations opérationnelles --}}
-                    <div class="relative">
+                    <div class="relative items-center">
                         <x-dropdown align="left" width="56">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">

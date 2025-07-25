@@ -35,8 +35,16 @@
                             <td class="border px-2 py-1 text-center">{{ $technicien->est_proprietaire ? 'Oui' : 'Non' }}</td>
                             <td class="border px-2 py-1">{{ $technicien->zoneMaintenance->nom_zone ?? '-' }}</td>
                             <td class="border px-2 py-1 text-center">
-                                <a href="{{ route('techniciens.show', $technicien) }}" class="text-blue-600 hover:underline">Voir</a>
-                                <a href="{{ route('techniciens.edit', $technicien) }}" class="ml-2 text-green-600 hover:underline">Modifier</a>
+                                <div class="flex space-x-4 justify-center">
+                                    <a href="{{ route('techniciens.show', $technicien) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
+                                        <i class="fas fa-eye text-xl"></i>
+                                        <span class="text-xs">Détails</span>
+                                    </a>
+                                    <a href="{{ route('techniciens.edit', $technicien) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
+                                        <i class="fas fa-edit text-xl"></i>
+                                        <span class="text-xs">Modifier</span>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty
