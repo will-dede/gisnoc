@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Secteur;
-use App\Models\Region;
 use App\Models\Frequence;
 use Illuminate\Http\Request;
 
@@ -18,18 +17,15 @@ class SecteurController extends Controller
     // Affiche la liste des secteurs
     public function index()
     {
-        $secteurs = Secteur::with('region')->get();
-        // $secteurs = Secteur::with('region')->paginate(10); // Pour la pagination
+        $secteurs = Secteur::with(['frequence.technologie'])->get();
         return view('secteurs.index', compact('secteurs'));
     }
 
     // Affiche le formulaire de création d'un secteur
     public function create()
     {
-        $frequences = Frequence::with('technologies')->orderBy('nom_freq', 'asc')->get();
-        $regions = Region::orderBy('nom_region', 'asc')->get();
-        // $regions = Region::all();
-        return view('secteurs.create', compact('regions'));
+        $frequences = Frequence::orderBy('nom_freq', 'asc')->get();
+        return view('secteurs.create', compact('frequences'));
     }
 
     // Enregistre un nouveau secteur
@@ -37,9 +33,7 @@ class SecteurController extends Controller
     {
         try {
             $request->validate($this->validationRules());
-
             Secteur::create($request->all());
-
             return redirect()->route('secteurs.index')
                 ->with('success', self::SUCCESS_CREATE);
         } catch (\Exception $e) {
@@ -51,14 +45,15 @@ class SecteurController extends Controller
     // Affiche les détails d'un secteur
     public function show(Secteur $secteur)
     {
+        $secteur->load(['frequence.technologie']);
         return view('secteurs.show', compact('secteur'));
     }
 
     // Affiche le formulaire d'édition d'un secteur
     public function edit(Secteur $secteur)
     {
-        $regions = Region::all();
-        return view('secteurs.edit', compact('secteur', 'regions'));
+        $frequences = Frequence::orderBy('nom_freq', 'asc')->get();
+        return view('secteurs.edit', compact('secteur', 'frequences'));
     }
 
     // Met à jour un secteur
@@ -66,9 +61,7 @@ class SecteurController extends Controller
     {
         try {
             $request->validate($this->validationRules($secteur->id));
-
             $secteur->update($request->all());
-
             return redirect()->route('secteurs.index')
                 ->with('success', self::SUCCESS_UPDATE);
         } catch (\Exception $e) {
@@ -95,8 +88,13 @@ class SecteurController extends Controller
     protected function validationRules($id = null)
     {
         return [
-            'nom_secteur' => 'required|string|max:255|unique:secteurs,nom_secteur,' . $id,
-            'region_id' => 'required|exists:regions,id'
+            'nom_secteur' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:secteurs,nom_secteur,' . ($id ?? 'NULL') . ',id,frequence_id,' . request('frequence_id'),
+            ],
+            'frequence_id' => 'required|exists:frequences,id',
         ];
     }
 } 
