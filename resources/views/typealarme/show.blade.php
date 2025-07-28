@@ -26,6 +26,10 @@
                                 <label class="block text-sm font-medium text-gray-700">Nom du type</label>
                                 <p class="mt-1 text-sm text-gray-900">{{ $typealarme->nom_type_alarme }}</p>
                             </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Description</label>
+                                <p class="mt-1 text-sm text-gray-900">{{ $typealarme->descr_type_alarme }}</p>
+                            </div>
                         </div>
                         <div class="space-y-4">
                             <div>

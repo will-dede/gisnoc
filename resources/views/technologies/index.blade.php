@@ -2,9 +2,12 @@
     <div class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">Liste des technologies</h1>
-            <a href="{{ route('technologie.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                <i class="fas fa-plus mr-2"></i> Ajouter une technologie
-            </a>
+            {{-- A ajouter plus tard --}}
+            {{--
+                <a href="{{ route('technologie.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <i class="fas fa-plus mr-2"></i> Ajouter une technologie
+                </a>
+            --}}
         </div>
         @if(session('success'))
             <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>

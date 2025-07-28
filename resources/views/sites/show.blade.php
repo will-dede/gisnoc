@@ -4,7 +4,7 @@
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-semibold text-gray-800">Détail du site</h1>
+                        <h1 class="text-2xl font-semibold text-gray-800">Détails du site</h1>
                         <div class="flex space-x-2">
                             <a href="{{ route('sites.edit', $site) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -47,7 +47,7 @@
 
                     <!-- Cellules -->
                     <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-3">Cellules</h3>
+                        <h3 class="text-lg font-medium text-gray-900 mb-3">Nom des cellules</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <div class="bg-blue-50 p-3 rounded">
                                 <label class="block text-sm font-medium text-blue-700">2G</label>

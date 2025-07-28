@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center bg-primary">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('assets/img/GISNOC_Logo.png') }}" alt="Logo GISNOC" class="block h-14 w-auto fill-current text-gray-800" />
+                        <img src="{{ asset('assets/img/GISNOC_Logo.png') }}" alt="Logo GISNOC" class="block h-16 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
@@ -27,15 +27,6 @@
                         </x-nav-link>
                         <x-nav-link :href="route('rncs.index')" :active="request()->routeIs('rncs.*')">
                             {{ __('RNC') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('secteurs.index')" :active="request()->routeIs('secteurs.*')">
-                            {{ __('Secteurs') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('frequences.index')" :active="request()->routeIs('frequences.*')">
-                            {{ __('Fréquences') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('technologie.index')" :active="request()->routeIs('technologie.*')">
-                            {{ __('Technologies') }}
                         </x-nav-link>
                         <x-nav-link :href="route('zonemaintenance.index')" :active="request()->routeIs('zonemaintenance.*')">
                             <i class="fas fa-tools mr-2"></i> Zones de maintenance
@@ -168,15 +159,6 @@
                     {{ __('RNC') }}
                 </x-responsive-nav-link>
             @endif
-            <x-responsive-nav-link :href="route('secteurs.index')" :active="request()->routeIs('secteurs.*')">
-                {{ __('Secteurs') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('frequences.index')" :active="request()->routeIs('frequences.*')">
-                {{ __('Fréquences') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('technologie.index')" :active="request()->routeIs('technologie.*')">
-                {{ __('Technologies') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('zonemaintenance.index')" :active="request()->routeIs('zonemaintenance.*')">
                 {{ __('Zones de maintenance') }}
             </x-responsive-nav-link>

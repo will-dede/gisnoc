@@ -15,6 +15,11 @@
                 <x-text-input id="nom_type_alarme" name="nom_type_alarme" type="text" class="block mt-1 w-full" :value="old('nom_type_alarme', $typealarme->nom_type_alarme)" required autofocus />
                 <x-input-error :messages="$errors->get('nom_type_alarme')" class="mt-2" />
             </div>
+            <div class="mt-4">
+                <label for="descr_type_alarme" class="block font-medium text-sm text-gray-700">Description</label>
+                <textarea id="descr_type_alarme" name="descr_type_alarme" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" rows="3">{{ old('descr_type_alarme', $typealarme->descr_type_alarme) }}</textarea>
+                <x-input-error :messages="$errors->get('descr_type_alarme')" class="mt-2" />
+            </div>
             <div class="flex items-center justify-end mt-4">
                 <a href="{{ route('typealarme.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Annuler</a>
                 <x-primary-button class="ms-4">Mettre à jour</x-primary-button>
