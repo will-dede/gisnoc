@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 class IncidentController extends Controller
 {
     // Messages de succès
-    const SUCCESS_CREATE = 'Incident créé avec succès.';
-    const SUCCESS_UPDATE = 'Incident mis à jour avec succès.';
-    const SUCCESS_DELETE = 'Incident supprimé avec succès.';
+    const SUCCESS_CREATE = 'Incident ajouté avec succès !';
+    const SUCCESS_UPDATE = 'Incident mis à jour avec succès !';
+    const SUCCESS_DELETE = 'Incident supprimé avec succès !';
     const ERROR_GENERAL = 'Une erreur est survenue : ';
 
     // Affiche la liste des incidents

@@ -33,13 +33,8 @@
                         </x-nav-link>
                     @endif
                     
-                    {{-- Onglets à supprimer --}}
-                    {{-- <x-nav-link :href="route('siteincident.index')" :active="request()->routeIs('siteincident.*')">Incidents site</x-nav-link> --}}
-                    {{-- <x-nav-link :href="route('sitetechnologie.index')" :active="request()->routeIs('sitetechnologie.*')">Technologies site</x-nav-link> --}}
-                    {{-- <x-nav-link :href="route('secteurincident.index')" :active="request()->routeIs('secteurincident.*')">Incidents secteur</x-nav-link> --}}
-
                     {{-- Dropdown Informations opérationnelles --}}
-                    <div class="relative items-center">
+                    <div class="relative items-center" style="display:flex; align-items:center;">
                         <x-dropdown align="left" width="56">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
