@@ -49,4 +49,10 @@ class User extends Authenticatable
             'is_validated' => 'boolean',
         ];
     }
+
+    // Relation avec les incidents (un utilisateur peut avoir plusieurs incidents)
+    public function incidents()
+    {
+        return $this->hasMany(Incident::class);
+    }
 }

@@ -21,8 +21,8 @@ class Incident extends Model
         'notes',
         'technicien_id',
         'type_alarme_id',
-        'site_id'
-        // 'user_id'
+        'site_id',
+        'user_id'
     ];
 
     protected $casts = [
@@ -43,10 +43,10 @@ class Incident extends Model
     }
 
     // Relation avec User (un incident est lié à un utilisateur)
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Relation avec le site principal
     public function site()

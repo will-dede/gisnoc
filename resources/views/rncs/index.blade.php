@@ -24,16 +24,19 @@
             <table class="min-w-full bg-white border">
                 <thead>
                     <tr>
+                        <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom RNC</th>
-                        <!-- <th class="border px-2 py-1">Nbre de sites affectés</th> -->
                         <th class="border px-2 py-1">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $i = 1;
+                    @endphp
                     @forelse($rncs as $rnc)
                         <tr>
+                            <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
                             <td class="border px-2 py-1">{{ $rnc->nom_rnc }}</td>
-                            {{-- <td class="border px-2 py-1 text-center">{{ $rnc->site->count() }}</td> --}}
                             <td class="border px-2 py-1 text-center">
                                 <div class="flex space-x-4 justify-center font-bold">
                                     <a href="{{ route('rncs.show', $rnc) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">

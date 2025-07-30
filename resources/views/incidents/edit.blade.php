@@ -1,133 +1,658 @@
 <x-app-layout>
-    <div class="container mx-auto p-4">
+    <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-2xl font-bold">Modifier l'incident</h1>
-                    <a href="{{ route('incidents.show', $incident) }}" class="text-gray-600 hover:text-gray-900">
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </a>
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Modifier l'incident #{{ $incident->id }}</h1>
+
+            @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('incidents.update', $incident) }}" method="POST" class="bg-white shadow-md rounded-lg p-6">
+                @csrf
+                @method('PUT')
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-2">
+                    <!-- Sites -->
+                    <div class="mb-6">
+                        <label for="site_id" class="block text-sm font-medium text-gray-700 mb-1">
+                            Site concerné <span class="text-red-500">*</span>
+                        </label>
+                        <select id="site_id"
+                                name="site_id"
+                                class="form-select block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                onchange="afficherTechnologies()"
+                                required>
+                            <option value="">Sélectionnez un site</option>
+                            @foreach($sites as $site)
+                                <option class="uppercase" value="{{ $site->id }}" {{ old('site_id', $incident->site_id) == $site->id ? 'selected' : '' }}>
+                                    {{ $site->nom_site }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Technicien -->
+                    <div>
+                        <label for="technicien_id" class="block text-sm font-medium text-gray-700 mb-1">
+                            Technicien contacté <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select name="technicien_id" id="technicien_id"
+                                    class="form-select block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('technicien_id') border-red-500 @enderror"
+                                    required>
+                                <option value="">Sélectionnez</option>
+                                @foreach($techniciens as $tech)
+                                    <option value="{{ $tech->id }}" {{ old('technicien_id', $incident->technicien_id) == $tech->id ? 'selected' : '' }}>
+                                        {{ $tech->nom_tech }} {{ $tech->prenom_tech }}  ({{ $tech->tel_tech }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('technicien_id')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                @if(session('success'))
-                    <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
-                @endif
-                @if(session('error'))
-                    <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
-                @endif
+                <!-- Technologies, Fréquences, Secteurs -->
+                <div class="mb-6">
+                    <label for="technicien_id" class="block text-sm font-medium text-gray-700 mb-1">
+                        Technologies, Fréquences et Secteurs concernés <span class="text-red-500">*</span>
+                    </label>
+                    <div class="border rounded-lg p-0 m-0 bg-gray-50">
+                        <table class="table table-bordered table-striped" id="tech-freq-secteur-table">
+                            <tbody id="tech-freq-secteur-tbody">
+                                <!-- Le contenu sera généré dynamiquement par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                <form method="POST" action="{{ route('incidents.update', $incident) }}" class="space-y-6">
-                    @csrf
-                    @method('PUT')
-
-                    <!-- Informations de base -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="site_id" class="block font-medium text-sm text-gray-700">Site principal <span class="text-red-500">*</span></label>
-                            <select id="site_id" name="site_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="">Sélectionner un site</option>
-                                @foreach($sites as $site)
-                                    <option value="{{ $site->id }}" {{ old('site_id', $incident->site_id) == $site->id ? 'selected' : '' }}>
-                                        {{ $site->nom_site }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error :messages="$errors->get('site_id')" class="mt-2" />
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-2">
+                    <!-- Date début -->
+                    <div>
+                        <label for="date_debut_incident" class="block text-sm font-medium text-gray-700 mb-1">
+                            Date début <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <input type="datetime-local"
+                                   name="date_debut_incident"
+                                   id="date_debut_incident"
+                                   class="form-input block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('date_debut_incident') border-red-500 @enderror"
+                                   value="{{ old('date_debut_incident', $incident->date_debut_incident ? \Carbon\Carbon::parse($incident->date_debut_incident)->format('Y-m-d\TH:i') : '') }}"
+                                   step="60"
+                                   required>
                         </div>
+                        @error('date_debut_incident')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <div>
-                            <label for="type_alarme_id" class="block font-medium text-sm text-gray-700">Type d'alarme <span class="text-red-500">*</span></label>
-                            <select id="type_alarme_id" name="type_alarme_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="">Sélectionner un type d'alarme</option>
+                    <!-- Date fin -->
+                    <div>
+                        <label for="date_fin_incident" class="block text-sm font-medium text-gray-700 mb-1">
+                            Date fin
+                        </label>
+                        <div class="mt-1">
+                            <input type="datetime-local"
+                                   name="date_fin_incident"
+                                   id="date_fin_incident"
+                                   class="form-input block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('date_fin_incident') border-red-500 @enderror"
+                                   value="{{ old('date_fin_incident', $incident->date_fin_incident ? \Carbon\Carbon::parse($incident->date_fin_incident)->format('Y-m-d\TH:i') : '') }}"
+                                   step="60">
+                        </div>
+                        @error('date_fin_incident')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Date contact technicien -->
+                    <div>
+                        <label for="date_contact_technicien" class="block text-sm font-medium text-gray-700 mb-1">
+                            Date contact technicien
+                        </label>
+                        <div class="mt-1">
+                            <input type="datetime-local"
+                                   name="date_contact_technicien"
+                                   id="date_contact_technicien"
+                                   class="form-input block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('date_contact_technicien') border-red-500 @enderror"
+                                   value="{{ old('date_contact_technicien', $incident->date_contact_technicien ? \Carbon\Carbon::parse($incident->date_contact_technicien)->format('Y-m-d\TH:i') : '') }}"
+                                   step="60">
+                        </div>
+                        @error('date_contact_technicien')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Date arrivée sur site -->
+                    <div>
+                        <label for="date_arrivee_sur_site" class="block text-sm font-medium text-gray-700 mb-1">
+                            Date arrivée sur site
+                        </label>
+                        <div class="mt-1">
+                            <input type="datetime-local"
+                                   name="date_arrivee_sur_site"
+                                   id="date_arrivee_sur_site"
+                                   class="form-input block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('date_arrivee_sur_site') border-red-500 @enderror"
+                                   value="{{ old('date_arrivee_sur_site', $incident->date_arrivee_sur_site ? \Carbon\Carbon::parse($incident->date_arrivee_sur_site)->format('Y-m-d\TH:i') : '') }}"
+                                   step="60">
+                        </div>
+                        @error('date_arrivee_sur_site')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-2">
+                    <!-- Causes incident -->
+                    <div class="mt-6">
+                        <label for="causes_incident" class="block text-sm font-medium text-gray-700 mb-1">
+                            Causes incident
+                        </label>
+                        <div class="mt-1">
+                            <textarea name="causes_incident" id="causes_incident" rows="3"
+                                    class="form-textarea block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('causes_incident') border-red-500 @enderror">{{ old('causes_incident', $incident->causes_incident) }}</textarea>
+                        </div>
+                        @error('causes_incident')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Actions effectuées -->
+                    <div class="mt-6">
+                        <label for="actions_effectuees" class="block text-sm font-medium text-gray-700 mb-1">
+                            Actions effectuées
+                        </label>
+                        <div class="mt-1">
+                            <textarea name="actions_effectuees" id="actions_effectuees" rows="3"
+                                    class="form-textarea block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('actions_effectuees') border-red-500 @enderror">{{ old('actions_effectuees', $incident->actions_effectuees) }}</textarea>
+                        </div>
+                        @error('actions_effectuees')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-2">
+                    <!-- Intervenant -->
+                    <div>
+                        <label for="intervenant" class="block text-sm font-medium text-gray-700 mb-1">
+                            Intervenant
+                        </label>
+                        <div class="mt-1">
+                            <input type="text"
+                                    name="intervenant"
+                                    id="intervenant"
+                                    maxlength="50"
+                                    class="form-input block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('intervenant') border-red-500 @enderror"
+                                    value="{{ old('intervenant', $incident->intervenant) }}">
+                        </div>
+                        @error('intervenant')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+    
+                    <!-- Type d'alarme -->
+                    <div>
+                        <label for="type_alarme_id" class="block text-sm font-medium text-gray-700 mb-1">
+                            Type d'alarme <span class="text-red-500">*</span>
+                        </label>
+                        <div class="mt-1">
+                            <select name="type_alarme_id" id="type_alarme_id"
+                                    class="form-select block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('type_alarme_id') border-red-500 @enderror"
+                                    required>
+                                <option value="">Sélectionnez</option>
                                 @foreach($typesAlarme as $type)
                                     <option value="{{ $type->id }}" {{ old('type_alarme_id', $incident->type_alarme_id) == $type->id ? 'selected' : '' }}>
-                                        {{ $type->nom_type_alarme }}
+                                        {{ $type->nom_type_alarme }} ({{ $type->descr_type_alarme }})
                                     </option>
                                 @endforeach
                             </select>
-                            <x-input-error :messages="$errors->get('type_alarme_id')" class="mt-2" />
                         </div>
-
-                        <div>
-                            <label for="technicien_id" class="block font-medium text-sm text-gray-700">Technicien <span class="text-red-500">*</span></label>
-                            <select id="technicien_id" name="technicien_id" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
-                                <option value="">Sélectionner un technicien</option>
-                                @foreach($techniciens as $technicien)
-                                    <option value="{{ $technicien->id }}" {{ old('technicien_id', $incident->technicien_id) == $technicien->id ? 'selected' : '' }}>
-                                        {{ $technicien->nom_tech }} {{ $technicien->prenom_tech }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-input-error :messages="$errors->get('technicien_id')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <label for="intervenant" class="block font-medium text-sm text-gray-700">Intervenant</label>
-                            <x-text-input id="intervenant" name="intervenant" type="text" class="block mt-1 w-full" :value="old('intervenant', $incident->intervenant)" />
-                            <x-input-error :messages="$errors->get('intervenant')" class="mt-2" />
-                        </div>
+                        @error('type_alarme_id')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
-
-                    <!-- Dates -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="date_debut_incident" class="block font-medium text-sm text-gray-700">Date début incident <span class="text-red-500">*</span></label>
-                            <x-text-input id="date_debut_incident" name="date_debut_incident" type="datetime-local" class="block mt-1 w-full" :value="old('date_debut_incident', $incident->date_debut_incident ? $incident->date_debut_incident->format('Y-m-d\TH:i') : '')" required />
-                            <x-input-error :messages="$errors->get('date_debut_incident')" class="mt-2" />
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-2">
+                    <!-- Observation -->
+                    <div class="mt-6">
+                        <label for="observation" class="block text-sm font-medium text-gray-700 mb-1">
+                            Observation
+                        </label>
+                        <div class="mt-1">
+                            <textarea name="observation" id="observation" rows="3"
+                                      class="form-textarea block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('observation') border-red-500 @enderror">{{ old('observation', $incident->observation) }}</textarea>
                         </div>
-
-                        <div>
-                            <label for="date_fin_incident" class="block font-medium text-sm text-gray-700">Date fin incident</label>
-                            <x-text-input id="date_fin_incident" name="date_fin_incident" type="datetime-local" class="block mt-1 w-full" :value="old('date_fin_incident', $incident->date_fin_incident ? $incident->date_fin_incident->format('Y-m-d\TH:i') : '')" />
-                            <x-input-error :messages="$errors->get('date_fin_incident')" class="mt-2" />
+                        @error('observation')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>    
+    
+                    <!-- Notes -->
+                    <div class="mt-6">
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
+                            Notes
+                        </label>
+                        <div class="mt-1">
+                            <textarea name="notes" id="notes" rows="3"
+                                      class="form-textarea block w-full rounded-md shadow-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 @error('notes') border-red-500 @enderror"
+                                      placeholder="Vous pouvez ajouter des notes de rappel">{{ old('notes', $incident->notes) }}</textarea>
                         </div>
-
-                        <div>
-                            <label for="date_contact_technicien" class="block font-medium text-sm text-gray-700">Date contact technicien</label>
-                            <x-text-input id="date_contact_technicien" name="date_contact_technicien" type="datetime-local" class="block mt-1 w-full" :value="old('date_contact_technicien', $incident->date_contact_technicien ? $incident->date_contact_technicien->format('Y-m-d\TH:i') : '')" />
-                            <x-input-error :messages="$errors->get('date_contact_technicien')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <label for="date_arrivee_sur_site" class="block font-medium text-sm text-gray-700">Date arrivée sur site</label>
-                            <x-text-input id="date_arrivee_sur_site" name="date_arrivee_sur_site" type="datetime-local" class="block mt-1 w-full" :value="old('date_arrivee_sur_site', $incident->date_arrivee_sur_site ? $incident->date_arrivee_sur_site->format('Y-m-d\TH:i') : '')" />
-                            <x-input-error :messages="$errors->get('date_arrivee_sur_site')" class="mt-2" />
-                        </div>
+                        @error('notes')
+                            <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
+                </div>
 
-                    <!-- Détails -->
-                    <div class="space-y-4">
-                        <div>
-                            <label for="causes_incident" class="block font-medium text-sm text-gray-700">Causes de l'incident</label>
-                            <textarea id="causes_incident" name="causes_incident" rows="3" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('causes_incident', $incident->causes_incident) }}</textarea>
-                            <x-input-error :messages="$errors->get('causes_incident')" class="mt-2" />
-                        </div>
+                <div id="technologies-container" class="mb-6"></div>
+                <span id="tech-error" style="color:red; display:none;">Veuillez sélectionner au moins une technologie.</span>
+                <div id="tech-toast" style="display:none; position: fixed; top: 30px; right: 30px; background: #f87171; color: white; padding: 16px 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 9999; font-weight: bold;">Veuillez sélectionner au moins une technologie.</div>
 
-                        <div>
-                            <label for="actions_effectuees" class="block font-medium text-sm text-gray-700">Actions effectuées</label>
-                            <textarea id="actions_effectuees" name="actions_effectuees" rows="3" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('actions_effectuees', $incident->actions_effectuees) }}</textarea>
-                            <x-input-error :messages="$errors->get('actions_effectuees')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <label for="observation" class="block font-medium text-sm text-gray-700">Observation</label>
-                            <textarea id="observation" name="observation" rows="3" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('observation', $incident->observation) }}</textarea>
-                            <x-input-error :messages="$errors->get('observation')" class="mt-2" />
-                        </div>
-
-                        <div>
-                            <label for="notes" class="block font-medium text-sm text-gray-700">Notes</label>
-                            <textarea id="notes" name="notes" rows="3" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('notes', $incident->notes) }}</textarea>
-                            <x-input-error :messages="$errors->get('notes')" class="mt-2" />
-                        </div>
+                <!-- Sites impactés dynamiques -->
+                <div class="mt-8">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sites impactés (autres que le site principal)</label>
+                    <div id="sites-impactes-container">
+                        @foreach($incident->sites as $site)
+                            @if($site->id != $incident->site_id)
+                                <div class="border rounded p-4 mb-4 bg-gray-50 relative">
+                                    <button type="button" class="absolute top-2 right-2 text-red-500 remove-site-impacte" title="Retirer ce site">&times;</button>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Site impacté</label>
+                                            <select name="sites_impactes[{{ $loop->index }}][site_id]" class="form-select w-full" required>
+                                                <option value="">Sélectionnez un site</option>
+                                                @foreach($sites as $siteOption)
+                                                    @if($siteOption->id != $incident->site_id)
+                                                        <option value="{{ $siteOption->id }}" {{ $site->id == $siteOption->id ? 'selected' : '' }}>
+                                                            {{ $siteOption->nom_site }}
+                                                        </option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Technicien contacté</label>
+                                            <select name="sites_impactes[{{ $loop->index }}][technicien_id]" class="form-select w-full">
+                                                <option value="">--</option>
+                                                @foreach($techniciens as $tech)
+                                                    <option value="{{ $tech->id }}" {{ $site->pivot->technicien_id == $tech->id ? 'selected' : '' }}>
+                                                        {{ $tech->nom_tech }} {{ $tech->prenom_tech }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Date début</label>
+                                            <input type="datetime-local" name="sites_impactes[{{ $loop->index }}][date_debut_incident]" 
+                                                   class="form-input w-full"
+                                                   value="{{ $site->pivot->date_debut_incident ? \Carbon\Carbon::parse($site->pivot->date_debut_incident)->format('Y-m-d\TH:i') : '' }}">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Date fin</label>
+                                            <input type="datetime-local" name="sites_impactes[{{ $loop->index }}][date_fin_incident]" 
+                                                   class="form-input w-full"
+                                                   value="{{ $site->pivot->date_fin_incident ? \Carbon\Carbon::parse($site->pivot->date_fin_incident)->format('Y-m-d\TH:i') : '' }}">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Date contact du technicien</label>
+                                            <input type="datetime-local" name="sites_impactes[{{ $loop->index }}][date_contact_technicien]" 
+                                                   class="form-input w-full"
+                                                   value="{{ $site->pivot->date_contact_technicien ? \Carbon\Carbon::parse($site->pivot->date_contact_technicien)->format('Y-m-d\TH:i') : '' }}">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Date arrivée sur site</label>
+                                            <input type="datetime-local" name="sites_impactes[{{ $loop->index }}][date_arrivee_sur_site]" 
+                                                   class="form-input w-full"
+                                                   value="{{ $site->pivot->date_arrivee_sur_site ? \Carbon\Carbon::parse($site->pivot->date_arrivee_sur_site)->format('Y-m-d\TH:i') : '' }}">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Intervenant</label>
+                                            <input type="text" name="sites_impactes[{{ $loop->index }}][intervenant]" maxlength="50" 
+                                                   class="form-input w-full"
+                                                   value="{{ $site->pivot->intervenant }}">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Type d'alarme</label>
+                                            <select name="sites_impactes[{{ $loop->index }}][type_alarme_id]" class="form-select w-full">
+                                                <option value="">--</option>
+                                                @foreach($typesAlarme as $type)
+                                                    <option value="{{ $type->id }}" {{ $site->pivot->type_alarme_id == $type->id ? 'selected' : '' }}>
+                                                        {{ $type->nom_type_alarme }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Causes incident</label>
+                                            <textarea name="sites_impactes[{{ $loop->index }}][causes_incident]" class="form-textarea w-full">{{ $site->pivot->causes_incident }}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Actions effectuées</label>
+                                            <textarea name="sites_impactes[{{ $loop->index }}][actions_effectuees]" class="form-textarea w-full">{{ $site->pivot->actions_effectuees }}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Observation</label>
+                                            <textarea name="sites_impactes[{{ $loop->index }}][observation]" class="form-textarea w-full">{{ $site->pivot->observation }}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-700">Notes</label>
+                                            <textarea name="sites_impactes[{{ $loop->index }}][notes]" class="form-textarea w-full">{{ $site->pivot->notes }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        @endforeach
                     </div>
+                    <button type="button" id="add-site-impacte" class="mt-2 px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                        + Ajouter un site impacté
+                    </button>
+                </div>
 
-                    <div class="flex items-center justify-end mt-6">
-                        <a href="{{ route('incidents.show', $incident) }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Annuler</a>
-                        <x-primary-button class="ms-4">Mettre à jour</x-primary-button>
-                    </div>
-                </form>
-            </div>
+                <div class="flex items-center justify-between mt-8">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-150">
+                        <i class="fas fa-save mr-2"></i>Mettre à jour
+                    </button>
+                    <a href="{{ route('incidents.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white font-medium rounded-md transition-colors duration-150">
+                        <i class="fas fa-arrow-left mr-2"></i>Annuler
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
+
+    <style>
+        /* Aération des cases à cocher */
+        .checkbox-list label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+        .checkbox-list.techs {
+            flex-direction: column;
+        }
+        .checkbox-list.freqs {
+            flex-wrap: wrap;
+            gap: 1.2rem 2.5rem;
+        }
+        .checkbox-list.secteurs {
+            flex-direction: column;
+        }
+    </style>
+
+    <script>
+    const siteSelect = document.getElementById('site_id');
+    const techContainer = document.getElementById('technologies-container');
+    const siteError = document.getElementById('site-error');
+    siteSelect.onchange = function() {
+        const siteId = siteSelect.value;
+        techContainer.innerHTML = '';
+        siteError.style.display = 'none';
+        if (!siteId) return;
+        fetch(`/api/sites/${siteId}/technologies`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.technologies || data.technologies.length === 0) {
+                    siteError.style.display = 'inline';
+                    return;
+                }
+                let html = '<label class="block text-sm font-medium text-gray-700 mb-2">Technologies concernées <span class="text-red-500">*</span></label>';
+                html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+                data.technologies.forEach(tech => {
+                    html += `<div class='flex items-center'>` +
+                            `<input type='checkbox' name='technologies[]' value='${tech.id}' id='tech_${tech.id}' class='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'>` +
+                            `<label for='tech_${tech.id}' class='ml-2 block text-sm text-gray-900'>${tech.nom_technologie}</label>` +
+                            `</div>`;
+                });
+                html += '</div>';
+                techContainer.innerHTML = html;
+            })
+            .catch(() => { siteError.style.display = 'inline'; });
+    };
+
+    // Validation à la soumission
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const techCheckboxes = techContainer.querySelectorAll('input[type="checkbox"]');
+        const checked = Array.from(techCheckboxes).some(cb => cb.checked);
+        if (techCheckboxes.length > 0 && !checked) {
+            e.preventDefault();
+            document.getElementById('tech-error').style.display = 'inline';
+            // Toast notification
+            const toast = document.getElementById('tech-toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        } else {
+            document.getElementById('tech-error').style.display = 'none';
+        }
+    });
+
+    const sites = @json($sites);
+    const techniciens = @json($techniciens);
+    const typesAlarme = @json($typesAlarme);
+    const sitesImpactesContainer = document.getElementById('sites-impactes-container');
+    const addSiteImpacteBtn = document.getElementById('add-site-impacte');
+
+    function getSiteOptions(selected = null) {
+        let principal = document.getElementById('site_id').value;
+        return sites
+            .filter(site => site.id != principal)
+            .map(site => `<option value="${site.id}" ${selected == site.id ? 'selected' : ''}>${site.nom_site}</option>`)
+            .join('');
+    }
+
+    function getTechOptions(selected = null) {
+        return techniciens.map(tech => `<option value="${tech.id}" ${selected == tech.id ? 'selected' : ''}>${tech.nom_tech} ${tech.prenom_tech}</option>`).join('');
+    }
+    function getTypeAlarmeOptions(selected = null) {
+        return typesAlarme.map(type => `<option value="${type.id}" ${selected == type.id ? 'selected' : ''}}>${type.nom_type_alarme}</option>`).join('');
+    }
+
+    let siteImpacteIndex = {{ $incident->sites->count() }};
+    addSiteImpacteBtn.addEventListener('click', function() {
+        const idx = siteImpacteIndex++;
+        const bloc = document.createElement('div');
+        bloc.className = 'border rounded p-4 mb-4 bg-gray-50 relative';
+        bloc.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-500 remove-site-impacte" title="Retirer ce site">&times;</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Site impacté</label>
+                    <select name="sites_impactes[${idx}][site_id]" class="form-select w-full" required>
+                        <option value="">Sélectionnez un site</option>
+                        ${getSiteOptions()}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Technicien contacté</label>
+                    <select name="sites_impactes[${idx}][technicien_id]" class="form-select w-full">
+                        <option value="">--</option>
+                        ${getTechOptions()}
+                    </select>
+                </div>
+               <div>
+                    <label class="block text-xs font-medium text-gray-700">Date début</label>
+                    <input type="datetime-local" name="sites_impactes[${idx}][date_debut_incident]" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Date fin</label>
+                    <input type="datetime-local" name="sites_impactes[${idx}][date_fin_incident]" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Date contact du technicien</label>
+                    <input type="datetime-local" name="sites_impactes[${idx}][date_contact_technicien]" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Date arrivée sur site</label>
+                    <input type="datetime-local" name="sites_impactes[${idx}][date_arrivee_sur_site]" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Intervenant</label>
+                    <input type="text" name="sites_impactes[${idx}][intervenant]" maxlength="50" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Type d'alarme</label>
+                    <select name="sites_impactes[${idx}][type_alarme_id]" class="form-select w-full">
+                        <option value="">--</option>
+                        ${getTypeAlarmeOptions()}
+                    </select>
+                </div>
+                 <div>
+                    <label class="block text-xs font-medium text-gray-700">Causes incident</label>
+                    <textarea name="sites_impactes[${idx}][causes_incident]" class="form-textarea w-full"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Actions effectuées</label>
+                    <textarea name="sites_impactes[${idx}][actions_effectuees]" class="form-textarea w-full"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Observation</label>
+                    <textarea name="sites_impactes[${idx}][observation]" class="form-textarea w-full"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700">Notes</label>
+                    <textarea name="sites_impactes[${idx}][notes]" class="form-textarea w-full"></textarea>
+                </div>
+            </div>
+        `;
+        sitesImpactesContainer.appendChild(bloc);
+    });
+
+    // Suppression d'un bloc site impacté
+    sitesImpactesContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-site-impacte')) {
+            e.target.closest('div.border').remove();
+        }
+    });
+
+    const data = @json($arbreTechnosFreqSecteurs);
+    const tableBody = document.getElementById('tech-freq-secteur-tbody');
+
+    // Utilitaires pour générer les cases à cocher
+    function createCheckbox(name, value, text, id, checked = false, inline = false) {
+        const divClass = inline ? 'form-check form-check-inline me-3' : 'form-check mb-1';
+        return `<div class="${divClass}">
+            <input type="checkbox" name="${name}" value="${value}" id="${id}" class="form-check-input" ${checked ? 'checked' : ''}>
+            <label for="${id}" class="form-check-label ms-1">${text}</label>
+        </div>`;
+    }
+
+    // Récupère la liste cumulative des fréquences pour les technos cochées
+    function getUnionFrequences(checkedTechIds) {
+        const freqMap = {};
+        checkedTechIds.forEach(techId => {
+            const tech = data[techId];
+            if (tech) {
+                Object.values(tech.frequences).forEach(freq => {
+                    freqMap[freq.id] = freq;
+                });
+            }
+        });
+        return Object.values(freqMap);
+    }
+    // Récupère la liste cumulative des secteurs pour les fréquences cochées
+    function getUnionSecteurs(checkedFreqIds) {
+        const secteurMap = {};
+        Object.values(data).forEach(tech => {
+            Object.values(tech.frequences).forEach(freq => {
+                if (checkedFreqIds.includes(freq.id.toString())) {
+                    freq.secteurs.forEach(secteur => {
+                        secteurMap[secteur.id] = secteur;
+                    });
+                }
+            });
+        });
+        return Object.values(secteurMap);
+    }
+
+    // Génère le tableau à 3 colonnes
+    function renderCumulativeTable() {
+        // Récupérer l'état actuel des cases cochées
+        const checkedTechs = Array.from(tableBody.querySelectorAll('input[name="technologies[]"]:checked')).map(cb => cb.value);
+        const checkedFreqs = Array.from(tableBody.querySelectorAll('input[name="frequences[]"]:checked')).map(cb => cb.value);
+        const checkedSecteurs = Array.from(tableBody.querySelectorAll('input[name="secteurs[]"]:checked')).map(cb => cb.value);
+        
+        // 1. Technologies
+        let techCol = '';
+        Object.values(data).forEach(tech => {
+            const isChecked = checkedTechs.includes(tech.id.toString());
+            techCol += createCheckbox('technologies[]', tech.id, tech.nom, `tech_${tech.id}`, isChecked);
+        });
+        
+        // 2. Fréquences (selon technos cochées)
+        let freqCol = '';
+        if (checkedTechs.length > 0) {
+            const freqs = getUnionFrequences(checkedTechs);
+            freqs.forEach(freq => {
+                const isChecked = checkedFreqs.includes(freq.id.toString());
+                freqCol += createCheckbox('frequences[]', freq.id, freq.nom, `freq_${freq.id}`, isChecked);
+            });
+        }
+        
+        // 3. Secteurs (groupés par fréquence, alignés horizontalement)
+        let secteurCol = '';
+        if (checkedFreqs.length > 0) {
+            // Grouper les secteurs par fréquence
+            const secteursParFreq = {};
+            Object.values(data).forEach(tech => {
+                Object.values(tech.frequences).forEach(freq => {
+                    if (checkedFreqs.includes(freq.id.toString())) {
+                        if (!secteursParFreq[freq.id]) {
+                            secteursParFreq[freq.id] = [];
+                        }
+                        freq.secteurs.forEach(secteur => {
+                            // Éviter les doublons
+                            if (!secteursParFreq[freq.id].find(s => s.id === secteur.id)) {
+                                secteursParFreq[freq.id].push(secteur);
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Afficher les secteurs groupés par fréquence
+            Object.entries(secteursParFreq).forEach(([freqId, secteurs]) => {
+                secteurCol += '<div class="mb-2">';
+                secteurs.forEach(secteur => {
+                    const isChecked = checkedSecteurs.includes(secteur.id.toString());
+                    secteurCol += createCheckbox('secteurs[]', secteur.id, secteur.nom, `secteur_${secteur.id}`, isChecked, true);
+                });
+                secteurCol += '</div>';
+            });
+        }
+        
+        // Générer une seule ligne de tableau avec 3 colonnes
+        tableBody.innerHTML = `<tr>
+            <td style="vertical-align:top; min-width:180px;">${techCol}</td>
+            <td style="vertical-align:top; min-width:180px;">${freqCol}</td>
+            <td style="vertical-align:top; min-width:180px;">${secteurCol}</td>
+        </tr>`;
+        
+        // Réattacher les événements
+        attachCumulativeEvents();
+    }
+
+    function attachCumulativeEvents() {
+        // Quand on coche/décoche une techno, on met à jour la colonne fréquences
+        tableBody.querySelectorAll('input[name="technologies[]"]').forEach(cb => {
+            cb.addEventListener('change', renderCumulativeTable);
+        });
+        // Quand on coche/décoche une fréquence, on met à jour la colonne secteurs
+        tableBody.querySelectorAll('input[name="frequences[]"]').forEach(cb => {
+            cb.addEventListener('change', renderCumulativeTable);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCumulativeTable();
+    });
+    </script>
 </x-app-layout> 

@@ -24,15 +24,18 @@
             <table class="min-w-full bg-white border">
                 <thead>
                     <tr>
-                        <!-- <th class="border px-2 py-1">ID</th> -->
+                        <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom BSC</th>
                         <th class="border px-2 py-1">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $i = 1;
+                    @endphp 
                     @forelse($bscs as $bsc)
                         <tr>
-                            <!-- <td class="border px-2 py-1 text-center">{{ $bsc->id }}</td> -->
+                            <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
                             <td class="border px-2 py-1">{{ $bsc->nom_bsc }}</td>
                             <td class="border px-2 py-1 text-center">
                                 <div class="flex space-x-4 justify-center font-bold">

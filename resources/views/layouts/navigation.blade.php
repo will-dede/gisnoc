@@ -18,10 +18,10 @@
                     <x-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
                         {{ __('Incidents') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
+                        {{ __('Sites') }}
+                    </x-nav-link>
                     @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
-                        <x-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
-                            {{ __('Sites') }}
-                        </x-nav-link>
                         <x-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
                             {{ __('BSC') }}
                         </x-nav-link>
@@ -143,10 +143,10 @@
             <x-responsive-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
                 {{ __('Incidents') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
+                {{ __('Sites') }}
+            </x-responsive-nav-link>
             @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
-                <x-responsive-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
-                    {{ __('Sites') }}
-                </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
                     {{ __('BSC') }}
                 </x-responsive-nav-link>

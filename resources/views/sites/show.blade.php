@@ -20,10 +20,10 @@
                     <!-- Informations de base -->
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div class="space-y-4">
-                            <div>
+                            <!-- <div>
                                 <label class="block text-sm font-medium text-gray-700">ID</label>
                                 <p class="mt-1 text-sm text-gray-900">{{ $site->id }}</p>
-                            </div>
+                            </div> -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nom du site</label>
                                 <p class="mt-1 text-sm text-gray-900 font-medium">{{ $site->nom_site }}</p>
@@ -89,12 +89,12 @@
                                     <p class="mt-1 text-sm text-gray-900">{{ $site->region->nom_region ?? '-' }}</p>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700">NodeType</label>
-                                    <p class="mt-1 text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '-' }}</p>
-                                </div>
-                                <div>
                                     <label class="block text-sm font-medium text-gray-700">Zone de maintenance</label>
                                     <p class="mt-1 text-sm text-gray-900">{{ $site->zoneMaintenance->nom_zone ?? '-' }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">NodeType</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '-' }}</p>
                                 </div>
                             </div>
                             <div class="space-y-4">

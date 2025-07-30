@@ -23,7 +23,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->foreignId('technicien_id')->constrained('techniciens')->nullable();
             $table->foreignId('type_alarme_id')->constrained('type_alarmes')->nullable();
-            // $table->foreignId('user_id')->constrained('users')->nullable(); //Avec ou sans S ?
+            $table->foreignId('user_id')->constrained('users')->nullable(); // Utilisateur qui a ajouté l'incident
             $table->timestamps();
         });
     }

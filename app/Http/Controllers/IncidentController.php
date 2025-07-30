@@ -134,7 +134,9 @@ class IncidentController extends Controller
             ]);
 
             // Création de l'incident principal
-            $incident = Incident::create($validatedData);
+            $incident = Incident::create(array_merge($validatedData, [
+                'user_id' => auth()->id() // Ajouter l'utilisateur connecté
+            ]));
 
             // Attacher les sites impactés avec toutes les infos de la table pivot
             if ($request->has('sites_impactes')) {
