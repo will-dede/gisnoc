@@ -187,8 +187,8 @@
         <div class="scroll-container custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-200" style="min-width: 1400px;">
                 <thead class="bg-gray-50">
-                    <tr class="border-2 border-gray-200" style="font-weight:bold;">
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">N°</th>
+                    <tr class="border-2 border-gray-200" style="font-weight:600!important;">
+                        <th class="border px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">N°</th>
                         <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'site' ? 'bg-blue-50' : '' }}">
                             <div class="flex items-center space-x-1">
                                 <span>Site</span>
@@ -271,7 +271,7 @@
                             </div>
                         </th>
                         <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Observation</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Créé par</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">NOC Engineer</th>
                         <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
@@ -281,7 +281,7 @@
                     @endphp
                     @forelse($incidents as $incident)
                         <tr class="hover:bg-blue-50 even:bg-gray-50">
-                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">{{ $i++ }}</td>
+                            <td class="border px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">{{ $i++ }}</td>
                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">
                                 {{ $incident->site ? $incident->site->nom_site : '-' }}
                                 @if($incident->sites->count() == 1)
