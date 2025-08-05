@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <!-- Détails de la région -->
@@ -6,6 +7,7 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détails de la région</h1>
+                        @if(auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('regions.edit', $region) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -18,33 +20,25 @@
                                 <span class="text-xs">Supprimer</span>
                             </button>
                         </div>
+                        @endif
+                        <a href="{{ route('regions.index') }}" class="inline-flex items-center px-4 py-1 text-blue-800 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
+                            <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des régions
+                        </a>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <!-- Informations principales -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">ID</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $region->id }}</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nom de la région</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $region->nom_region }}</p>
-                            </div>
+                    <!-- Informations principales -->
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Nom de la région</label>
+                            <p class="mt-1 text-sm font-bold text-gray-700">{{ $region->nom_region }}</p>
                         </div>
-
-                        <!-- Informations de date -->
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Date de création</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $region->created_at->format('d/m/Y H:i') }}</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Dernière modification</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $region->updated_at->format('d/m/Y H:i') }}</p>
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-500">Date de création</label>
+                            <p class="mt-1 text-sm font-bold text-gray-700">{{ $region->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                        <div class="">
+                            <label class="block text-sm font-medium text-gray-500">Dernière modification</label>
+                            <p class="mt-1 text-sm font-bold text-gray-700">{{ $region->updated_at->format('d/m/Y H:i') }}</p>
                         </div>
                     </div>
                 </div>
@@ -53,12 +47,7 @@
             <!-- Liste des sites -->
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
                 <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800">Sites dans cette région</h2>
-                        <a href="{{ route('sites.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            <i class="fas fa-plus mr-2"></i> Ajouter un site
-                        </a>
-                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6">Sites dans cette région</h2>
 
                     @if($region->sites && $region->sites->count() > 0)
                         <div class="overflow-x-auto">
@@ -67,10 +56,11 @@
                                     <tr>
                                         <th class="border px-2 py-1">N°</th>
                                         <th class="border px-2 py-1">Nom du site</th>
-                                        <th class="border px-2 py-1">Cellules</th>
+                                        <th class="border px-2 py-1">Cell2G</th>
+                                        <th class="border px-2 py-1">Cell3G</th>
+                                        <th class="border px-2 py-1">Cell4G</th>
                                         <th class="border px-2 py-1">NodeName</th>
-                                        <th class="border px-2 py-1">Node<br>Type</th>
-                                        <th class="border px-2 py-1">Actions</th>
+                                        <th class="border px-2 py-1">NodeType</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -79,33 +69,17 @@
                                     @endphp
                                     @foreach($region->sites as $site)
                                         <tr>
-                                            <td class="border px-2 py-1 text-center text-base text-gray-500">{{ $i++ }}</td>
+                                            <td class="border px-2 py-1 text-center text-base text-gray-900">{{ $i++ }}</td>
                                             <td class="border px-2 py-1 text-base text-gray-900">
-                                                <a href="{{ route('sites.show', $site) }}" class="text-gray-700 hover:text-blue-900">
+                                                <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-900 hover:bg-blue-50 rounded" style="display:block; width:100%">
                                                     {{ $site->nom_site }}
                                                 </a>
                                             </td>
-                                            <td class="border px-2 py-1 text-sm text-gray-900">
-                                                @if($site->cell2G)
-                                                    <div class="text-sm">2G: {{ $site->cell2G }}</div>
-                                                @endif
-                                                @if($site->cell3G)
-                                                    <div class="text-sm">3G: {{ $site->cell3G }}</div>
-                                                @endif
-                                                @if($site->cell4G)
-                                                    <div class="text-sm">4G: {{ $site->cell4G }}</div>
-                                                @endif
-                                            </td>
-                                            <td class="border px-2 py-1 text-sm text-gray-900">{{ $site->nodeName ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell2G ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell3G ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell4G ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->nodeName ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->typeSite->nom_type_site ?? '' }}</td>
-                                            <td class="border px-2 py-1 text-center">
-                                                <div class="flex space-x-4 justify-center font-bold">
-                                                    <a href="{{ route('sites.show', $site) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
-                                                        <i class="fas fa-eye text-sm"></i>
-                                                        <span class="text-sm">Détails</span>
-                                                    </a>
-                                                </div>
-                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -117,12 +91,6 @@
                         </div>
                     @endif
                 </div>
-            </div>
-
-            <div class="mt-6">
-                <a href="{{ route('regions.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
-                    <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des régions
-                </a>
             </div>
         </div>
     </div>
@@ -161,4 +129,16 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+                Pour y avoir accès, merci de contacter un administrateur.
+            </p>
+            <a href="{{ route('dashboard') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

@@ -34,7 +34,7 @@ class RegionController extends Controller
         
         try {
             Region::create($validatedData);
-            return redirect()->route('regions.create')->with('success', 'Région créée avec succès.');
+            return redirect()->route('regions.index')->with('success', 'Région créée avec succès.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la création de la région.')->withInput();
         }

@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if(auth()->check() && auth()->user()->role === 'admin')
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-gray-800 mb-6">Modifier l'incident #{{ $incident->id }}</h1>
@@ -355,7 +356,6 @@
                         + Ajouter un site impacté
                     </button>
                 </div>
-
                 <div class="flex items-center justify-between mt-8">
                     <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-150">
                         <i class="fas fa-save mr-2"></i>Mettre à jour
@@ -367,6 +367,7 @@
             </form>
         </div>
     </div>
+    @endif
 
     <style>
         /* Aération des cases à cocher */

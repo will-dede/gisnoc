@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if(auth()->check() && auth()->user()->role === 'admin')            
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-gray-800 mb-6">Ajouter un nouvel incident</h1>
@@ -314,6 +315,7 @@
             </form>
         </div>
     </div>
+    @endif
 
     <style>
         /* Aération des cases à cocher */

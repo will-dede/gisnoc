@@ -3,7 +3,9 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des sites</h1>
+                @if(auth()->check() && auth()->user()->role === 'superadmin')
                 <a href="{{ route('sites.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-plus text-sm"></i> Ajouter un site</a>
+                @endif
             </div>
             <form method="GET" action="" class="mb-4 flex gap-2">
                 {{-- A afficher plus tard... --}}

@@ -166,9 +166,11 @@
                     </button>
                 </form>
             </div>
+            @if(auth()->check() && auth()->user()->role === 'admin')
             <a href="{{ route('incidents.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700">
                 <i class="fas fa-plus mr-2"></i>Nouvel incident
             </a>
+            @endif
         </div>
 
         @if(session('success'))
@@ -380,50 +382,14 @@
                                             <span class="fw-bold">Détails</span>
                                         </a>
                                     </div>
+                                    @if(auth()->check() && auth()->user()->role === 'admin')
                                     <div class="flex flex-col items-center">
                                         <a href="{{ route('incidents.edit', $incident) }}" class="flex flex-col items-center text-yellow-700 hover:text-yellow-900">
                                             <i class="fas fa-edit text-xl mb-1"></i>
                                             <span class="fw-bold">Modifier</span>
                                         </a>
                                     </div>
-                                    <!-- <div class="flex flex-col items-center">
-                                        <button type="button" 
-                                                onclick="document.getElementById('deleteModal{{ $incident->id }}').classList.remove('hidden')"
-                                                class="flex flex-col items-center text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash text-xl mb-1"></i>
-                                            <span class="">Supprimer</span>
-                                        </button>
-                                    </div> -->
-                                </div>
-
-                                <!-- Modal de confirmation de suppression -->
-                                <div id="deleteModal{{ $incident->id }}" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                                        <div class="mt-3 text-center">
-                                            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
-                                            </div>
-                                            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Confirmation de suppression</h3>
-                                            <div class="mt-2 px-7 py-3">
-                                                <p class="text-sm text-gray-500">
-                                                    Êtes-vous sûr de vouloir supprimer cet incident ? Cette action est irréversible.
-                                                </p>
-                                            </div>
-                                            <div class="flex justify-center mt-4 space-x-4">
-                                                <button onclick="document.getElementById('deleteModal{{ $incident->id }}').classList.add('hidden')" 
-                                                        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
-                                                    Annuler
-                                                </button>
-                                                <form action="{{ route('incidents.destroy', $incident) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-                                                        Confirmer
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

@@ -109,26 +109,10 @@ class SiteController extends Controller
 
         return view('sites.index', compact('sites'));
     }
-    
-
-
-    // public function index()
-    // {
-    //     $sites = Site::with(['region', 'typeSite', 'bsc', 'rnc', 'zoneMaintenance'])->get();
-    //     // $sites = Site::with(['region', 'typeSite'])->paginate(10); // Pour la pagination
-    //     return view('sites.index', compact('sites'));
-    // }
 
     // Affiche le formulaire de création d'un site
     public function create()
     {
-        // $regions = Region::all();
-        // $type_sites = TypeSite::all();
-        // $bscs = Bsc::all();
-        // $rncs = Rnc::all();
-        // $zones = ZoneMaintenance::all();
-        // $technologies = Technologie::all();
-
         //Essayons de filtrer pour voir
         $regions = Region::orderBy('nom_region', 'asc')->get();
         $type_sites = TypeSite::orderBy('nom_type_site', 'asc')->get();
@@ -212,19 +196,39 @@ class SiteController extends Controller
     public function destroy(Site $site)
     {
         try {
-            // Détacher les relations many-to-many avant la suppression
-            $site->technologies()->detach();
-            $site->incidents()->detach();
-            
             $site->delete();
             return redirect()->route('sites.index')->with('success', self::SUCCESS_DELETE);
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', self::ERROR_GENERAL . $e->getMessage());
+            return redirect()->route('sites.index')->with('error', self::ERROR_GENERAL . $e->getMessage());
         }
     }
 
-    // Règles de validation
+    /**
+     * Affiche l'historique des incidents d'un site
+     */
+    public function incidents(Request $request, Site $site)
+    {
+        // Récupérer les incidents du site avec les relations nécessaires
+        $query = $site->incidents()
+            ->with(['typeAlarme', 'user', 'secteurs.frequence.technologie']);
+
+        // Filtrage par période
+        if ($request->filled('date_debut')) {
+            $query->where('site_incident.date_debut_incident', '>=', $request->date_debut);
+        }
+        
+        if ($request->filled('date_fin')) {
+            $query->where('site_incident.date_debut_incident', '<=', $request->date_fin . ' 23:59:59');
+        }
+
+        $incidents = $query->orderBy('site_incident.date_debut_incident', 'desc')->get();
+
+        return view('sites.incidents', compact('site', 'incidents'));
+    }
+
+    /**
+     * Récupère les données pour le formulaire de création/édition
+     */
     protected function validationRules($id = null)
     {
         return [
