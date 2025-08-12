@@ -137,7 +137,7 @@
                 Vous tentez d'accéder à une page non autorisée.<br>
                 Pour y avoir accès, merci de contacter un administrateur.
             </p>
-            <a href="{{ route('dashboard') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+                            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
         </div>
     </div>
     @endif

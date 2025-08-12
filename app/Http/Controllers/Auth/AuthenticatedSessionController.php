@@ -40,7 +40,7 @@ class AuthenticatedSessionController extends Controller
                     'email' => 'Votre compte doit être validé par un administrateur avant de pouvoir vous connecter.',
                 ])->onlyInput('email');
             }
-            return redirect()->intended(route('dashboard', absolute: false));
+            return redirect()->intended(route('incidents.index', absolute: false));
         }
 
         return back()->withErrors([

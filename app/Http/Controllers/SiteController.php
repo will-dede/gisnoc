@@ -99,7 +99,7 @@ class SiteController extends Controller
                       ->select('sites.*');
                 break;
             case 'incidents_count':
-                $query->withCount('incidents')->orderBy('incidents_count', $direction);
+                $query->withCount(['incidentsPrincipal as incidents_count'])->orderBy('incidents_count', $direction);
                 break;
             default:
                 $query->orderBy('nom_site', $direction);
@@ -152,7 +152,7 @@ class SiteController extends Controller
     // Affiche les détails d'un site
     public function show(Site $site)
     {
-        $site->load(['region', 'typeSite', 'bsc', 'rnc', 'zoneMaintenance', 'technologies', 'incidents']);
+        $site->load(['region', 'typeSite', 'bsc', 'rnc', 'zoneMaintenance', 'technologies', 'incidentsPrincipal']);
         return view('sites.show', compact('site'));
     }
 
@@ -208,20 +208,53 @@ class SiteController extends Controller
      */
     public function incidents(Request $request, Site $site)
     {
-        // Récupérer les incidents du site avec les relations nécessaires
-        $query = $site->incidents()
+        // 1) Incidents où ce site est impacté (relation pivot)
+        $pivotQuery = $site->incidents()
             ->with(['typeAlarme', 'user', 'secteurs.frequence.technologie']);
 
-        // Filtrage par période
         if ($request->filled('date_debut')) {
-            $query->where('site_incident.date_debut_incident', '>=', $request->date_debut);
+            $pivotQuery->where('site_incident.date_debut_incident', '>=', $request->date_debut);
         }
-        
         if ($request->filled('date_fin')) {
-            $query->where('site_incident.date_debut_incident', '<=', $request->date_fin . ' 23:59:59');
+            $pivotQuery->where('site_incident.date_debut_incident', '<=', $request->date_fin . ' 23:59:59');
         }
+        $pivotIncidents = $pivotQuery->orderBy('site_incident.date_debut_incident', 'desc')->get();
 
-        $incidents = $query->orderBy('site_incident.date_debut_incident', 'desc')->get();
+        // 2) Incidents où ce site est le site principal (one-to-many via site_id)
+        $principalQuery = $site->incidentsPrincipal()
+            ->with(['typeAlarme', 'user', 'secteurs.frequence.technologie']);
+
+        if ($request->filled('date_debut')) {
+            $principalQuery->where('date_debut_incident', '>=', $request->date_debut);
+        }
+        if ($request->filled('date_fin')) {
+            $principalQuery->where('date_debut_incident', '<=', $request->date_fin . ' 23:59:59');
+        }
+        $principalIncidents = $principalQuery->orderBy('date_debut_incident', 'desc')->get();
+
+        // Normaliser les champs attendus par la vue (qui lit via $incident->pivot->...)
+        $principalIncidents->each(function ($incident) {
+            $incident->setAttribute('pivot', (object) [
+                'date_debut_incident'   => $incident->date_debut_incident,
+                'date_fin_incident'     => $incident->date_fin_incident,
+                'date_arrivee_sur_site' => $incident->date_arrivee_sur_site,
+                'intervenant'           => $incident->intervenant,
+                'causes_incident'       => $incident->causes_incident,
+                'actions_effectuees'    => $incident->actions_effectuees,
+                'observation'           => $incident->observation,
+                'notes'                 => $incident->notes,
+                'technicien_id'         => $incident->technicien_id,
+                'type_alarme_id'        => $incident->type_alarme_id,
+            ]);
+        });
+
+        // Fusionner les deux listes et trier par date début (desc)
+        $incidents = $pivotIncidents
+            ->merge($principalIncidents)
+            ->sortByDesc(function ($incident) {
+                return $incident->pivot->date_debut_incident ?? $incident->date_debut_incident;
+            })
+            ->values();
 
         return view('sites.incidents', compact('site', 'incidents'));
     }

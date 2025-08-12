@@ -36,7 +36,6 @@
                                 </div>
                             </div>
 
-
                             <div class="flex flex-wrap gap-4 items-end">
                                 <div class="flex-1 min-w-48">
                                     <label for="date_debut" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
@@ -260,7 +259,7 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <a href="{{ route('incidents.show', $incident) }}" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                            <a href="{{ route('incidents.show', $incident) }}" class="bg-white text-blue-600 px-3 py-2 rounded text-xs hover:bg-blue-600 hover:text-white flex items-center gap-1">
                                                 <i class="fas fa-eye mr-1"></i>
                                                 Voir plus
                                             </a>
