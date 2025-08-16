@@ -179,14 +179,54 @@ class IncidentController extends Controller
     }
 
     // Affiche le formulaire d'édition d'un incident
+    // public function edit(Incident $incident)
+    // {
+    //     $typesAlarme = TypeAlarme::all();
+    //     $techniciens = Technicien::all();
+    //     $sites = Site::with(['technologies', 'zoneMaintenance'])->orderBy('nom_site', 'asc')->get();
+    //     $incident->load(['sites', 'site.technologies']);
+    //     return view('incidents.edit', compact('incident', 'typesAlarme', 'techniciens', 'sites'));
+    // }
+
+
+
     public function edit(Incident $incident)
-    {
-        $typesAlarme = TypeAlarme::all();
-        $techniciens = Technicien::all();
-        $sites = Site::with(['technologies', 'zoneMaintenance'])->orderBy('nom_site', 'asc')->get();
-        $incident->load(['sites', 'site.technologies']);
-        return view('incidents.edit', compact('incident', 'typesAlarme', 'techniciens', 'sites'));
+{
+    $typesAlarme = TypeAlarme::all();
+    $techniciens = Technicien::orderBy('nom_tech', 'asc')->orderBy('prenom_tech', 'asc')->get();
+    $sites = Site::with(['technologies', 'zoneMaintenance'])->orderBy('nom_site', 'asc')->get();
+
+    // Chargement des relations nécessaires pour l'incident
+    $incident->load(['site.technologies', 'technicien', 'typeAlarme']);
+
+    // Construction de l'arbre des technologies, fréquences et secteurs
+    $arbreTechnosFreqSecteurs = \App\Models\Technologie::with(['frequences.secteurs'])->get()->mapWithKeys(function($tech) {
+        return [
+            $tech->id => [
+                'id' => $tech->id,
+                'nom' => $tech->nom_technologie,
+                'frequences' => $tech->frequences->mapWithKeys(function($freq) {
+                    return [
+                        $freq->id => [
+                            'id' => $freq->id,
+                            'nom' => $freq->nom_freq,
+                            'secteurs' => $freq->secteurs->map(function($secteur) {
+                                return [
+                                    'id' => $secteur->id,
+                                    'nom' => $secteur->nom_secteur
+                                ];
+                            })->toArray()
+                        ]
+                    ];
+                })->toArray()
+            ]
+        ];
+    })->toArray();
+
+        return view('incidents.index', compact('incident', 'typesAlarme', 'techniciens', 'sites', 'arbreTechnosFreqSecteurs'));
     }
+
+
 
     // Met à jour un incident
     public function update(Request $request, Incident $incident)

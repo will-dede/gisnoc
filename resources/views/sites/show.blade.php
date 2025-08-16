@@ -150,9 +150,9 @@
                     <!-- Incidents (site principal uniquement) -->
                     @if($site->incidentsPrincipal->count() > 0)
                         <div class="mb-6">
-                            <h3 class="text-lg font-medium text-gray-900 mb-3">Incidents (site principal) ({{ $site->incidentsPrincipal->count() }})</h3>
+                            <h3 class="text-lg font-medium text-gray-900 mb-3">Nombre d'incidents : {{ $site->incidentsPrincipal->count() }}</h3>
                             <div class="bg-gray-50 p-3 rounded">
-                                <p class="text-sm text-gray-600">Ce site a {{ $site->incidentsPrincipal->count() }} incident(s) en tant que site principal.</p>
+                                <p class="text-sm text-gray-600">Ce site a {{ $site->incidentsPrincipal->count() }} incident(s).</p>
                             </div>
                         </div>
                     @endif

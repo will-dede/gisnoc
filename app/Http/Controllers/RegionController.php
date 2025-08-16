@@ -43,6 +43,9 @@ class RegionController extends Controller
     // Affiche les détails d'une région
     public function show(Region $region)
     {
+        $region->load(['sites' => function ($query){
+            $query->orderBy('nom_site');
+        }]);
         return view('regions.show', compact('region'));
     }
 

@@ -5,7 +5,8 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détails de l'incident #{{ $incident->id }}</h1>
-                        @if(auth()->check() && auth()->user()->role === 'admin')
+                        @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
+
                         <div class="flex space-x-2">
                             <a href="{{ route('incidents.edit', $incident) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>

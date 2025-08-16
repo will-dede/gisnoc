@@ -166,7 +166,7 @@
                     </button>
                 </form>
             </div>
-            @if(auth()->check() && auth()->user()->role === 'admin')
+            @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
             <a href="{{ route('incidents.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700">
                 <i class="fas fa-plus mr-2"></i>Nouvel incident
             </a>
@@ -189,92 +189,22 @@
         <div class="scroll-container custom-scrollbar">
             <table class="min-w-full divide-y divide-gray-200" style="min-width: 1400px;">
                 <thead class="bg-gray-50">
-                    <tr class="border-2 border-gray-200" style="font-weight:600!important;">
-                        <th class="border px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">N°</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'site' ? 'bg-blue-50' : '' }}">
-                            <div class="flex items-center space-x-1">
-                                <span>Site</span>
-                                <div class="flex flex-col px-1 -space-y-3">
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'site', 'direction' => 'asc']) }}" 
-                                       class="{{ request('sort') === 'site' && request('direction') === 'asc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-up text-xs"></i>
-                                    </a>
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'site', 'direction' => 'desc']) }}" 
-                                       class="{{ request('sort') === 'site' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-down text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="px-6 py-3 text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Secteurs</th>
-                        <th class="px-6 py-3 text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'date_debut' || !request('sort') ? 'bg-blue-50' : '' }}">
-                            <div class="flex text-center items-center space-x-1">
-                                <span>Date début</span>
-                                <div class="flex flex-col px-1 -space-y-3">
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'date_debut', 'direction' => 'asc']) }}" 
-                                       class="{{ (request('sort') === 'date_debut' && request('direction') === 'asc') || !request('sort') ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-up text-xs"></i>
-                                    </a>
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'date_debut', 'direction' => 'desc']) }}" 
-                                       class="{{ request('sort') === 'date_debut' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-down text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="px-6 py-3 text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'date_fin' ? 'bg-blue-50' : '' }}">
-                            <div class="flex text-center items-center space-x-1">
-                                <span>Date fin</span>
-                                <div class="flex flex-col px-1 -space-y-3">
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'date_fin', 'direction' => 'asc']) }}" 
-                                       class="{{ request('sort') === 'date_fin' && request('direction') === 'asc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-up text-xs"></i>
-                                    </a>
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'date_fin', 'direction' => 'desc']) }}" 
-                                       class="{{ request('sort') === 'date_fin' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-down text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="px-6 py-3 text-center text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Down time</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'technicien' ? 'bg-blue-50' : '' }}">
-                            <div class="flex items-center space-x-1">
-                                <span>Technicien<br>contacté</span>
-                                <div class="flex flex-col px-1 -space-y-3">
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'technicien', 'direction' => 'asc']) }}" 
-                                       class="{{ request('sort') === 'technicien' && request('direction') === 'asc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-up text-xs"></i>
-                                    </a>
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'technicien', 'direction' => 'desc']) }}" 
-                                       class="{{ request('sort') === 'technicien' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-down text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="px-6 py-3 text-center text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Zone de<br>maintenance</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Intervenant</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Causes</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Actions <br>effectuées</th>
-                        <th class="px-6 py-3 text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider {{ request('sort') === 'type_alarme' ? 'bg-blue-50' : '' }}">
-                            <div class="flex items-center space-x-1">
-                                <span class="text-center">Type <br>d'alarme</span>
-                                <div class="flex flex-col px-1 -space-y-3">
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'type_alarme', 'direction' => 'asc']) }}" 
-                                       class="{{ request('sort') === 'type_alarme' && request('direction') === 'asc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-up text-xs"></i>
-                                    </a>
-                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'type_alarme', 'direction' => 'desc']) }}" 
-                                       class="{{ request('sort') === 'type_alarme' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
-                                        <i class="fas fa-sort-down text-xs"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Observation</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">NOC Engineer</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium fw-bold text-gray-900 uppercase tracking-wider">Actions</th>
+                    <tr class="border-2 border-gray-200 text-sm" style="font-weight:600!important;">
+                        <th class="border px-2 py-1">N°</th>
+                        <th class="border px-2 py-1">Site</th>
+                        <th class="border px-2 py-1">Secteurs</th>
+                        <th class="border px-2 py-1">Date début</th>
+                        <th class="border px-2 py-1">Date fin</th>
+                        <th class="border px-2 py-1">Down time</th>
+                        <th class="border px-2 py-1">Technicien<br>contacté</th>
+                        <th class="border px-2 py-1">Zone de<br>maintenance</th>
+                        <th class="border px-2 py-1">Intervenant</th>
+                        <th class="border px-2 py-1">Causes</th>
+                        <th class="border px-2 py-1">Actions <br>effectuées</th>
+                        <th class="border px-2 py-1">Type <br>d'alarme</th>
+                        <th class="border px-2 py-1">Observation</th>
+                        <th class="border px-2 py-1">NOC Engineer</th>
+                        <th class="border px-2 py-1">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -382,7 +312,8 @@
                                             <span class="fw-bold">Détails</span>
                                         </a>
                                     </div>
-                                    @if(auth()->check() && auth()->user()->role === 'admin')
+                                    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
+
                                     <div class="flex flex-col items-center">
                                         <a href="{{ route('incidents.edit', $incident) }}" class="flex flex-col items-center text-yellow-700 hover:text-yellow-900">
                                             <i class="fas fa-edit text-xl mb-1"></i>

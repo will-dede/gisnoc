@@ -23,7 +23,7 @@
             @endif
 
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom</th>

@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="w-full max-w-md mx-auto mt-10">
         <form method="POST" action="{{ route('techniciens.store') }}" class="bg-white shadow rounded p-8">
             @csrf
@@ -10,25 +11,25 @@
                 <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
             @endif
             <div>
-                <label for="nom_technicien" class="block font-medium text-sm text-gray-700">
+                <label for="nom_tech" class="block font-medium text-sm text-gray-700">
                     Nom <span class="text-red-500">*</span>
                 </label>
-                <x-text-input id="nom_technicien" name="nom_technicien" type="text" class="block mt-1 w-full" :value="old('nom_technicien')" required autofocus />
-                <x-input-error :messages="$errors->get('nom_technicien')" class="mt-2" />
+                <x-text-input id="nom_tech" name="nom_tech" type="text" class="block mt-1 w-full" :value="old('nom_tech')" required autofocus />
+                <x-input-error :messages="$errors->get('nom_tech')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <label for="prenom_technicien" class="block font-medium text-sm text-gray-700">
+                <label for="prenom_tech" class="block font-medium text-sm text-gray-700">
                     Prénom <span class="text-red-500">*</span>
                 </label>
-                <x-text-input id="prenom_technicien" name="prenom_technicien" type="text" class="block mt-1 w-full" :value="old('prenom_technicien')" required />
-                <x-input-error :messages="$errors->get('prenom_technicien')" class="mt-2" />
+                <x-text-input id="prenom_tech" name="prenom_tech" type="text" class="block mt-1 w-full" :value="old('prenom_tech')" required />
+                <x-input-error :messages="$errors->get('prenom_tech')" class="mt-2" />
             </div>
             <div class="mt-4">
-                <label for="tel_technicien" class="block font-medium text-sm text-gray-700">
+                <label for="tel_tech" class="block font-medium text-sm text-gray-700">
                     Téléphone <span class="text-red-500">*</span>
                 </label>
-                <x-text-input id="tel_technicien" name="tel_technicien" type="text" class="block mt-1 w-full" :value="old('tel_technicien')" required />
-                <x-input-error :messages="$errors->get('tel_technicien')" class="mt-2" />
+                <x-text-input id="tel_tech" name="tel_tech" type="text" class="block mt-1 w-full" :value="old('tel_tech')" required />
+                <x-input-error :messages="$errors->get('tel_tech')" class="mt-2" />
             </div>
             <div class="mt-4">
                 <x-input-label for="est_proprietaire" :value="'Responsable de la zone ?'" />
@@ -56,4 +57,16 @@
             </div>
         </form>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+                Pour y avoir accès, merci de contacter un administrateur.
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

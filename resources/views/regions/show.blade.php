@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <!-- Détails de la région -->
@@ -7,7 +7,7 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détails de la région</h1>
-                        @if(auth()->user()->role === 'superadmin')
+                        @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('regions.edit', $region) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -21,7 +21,7 @@
                             </button>
                         </div>
                         @endif
-                        <a href="{{ route('regions.index') }}" class="inline-flex items-center px-4 py-1 text-blue-800 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
+                        <a href="{{ route('regions.index') }}" class="inline-flex items-center px-1 py-1 text-blue-800 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
                             <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des régions
                         </a>
                     </div>
@@ -52,15 +52,15 @@
                     @if($region->sites && $region->sites->count() > 0)
                         <div class="overflow-x-auto">
                             <table class="min-w-full bg-white border">
-                                <thead>
+                                <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="border px-2 py-1">N°</th>
-                                        <th class="border px-2 py-1">Nom du site</th>
-                                        <th class="border px-2 py-1">Cell2G</th>
-                                        <th class="border px-2 py-1">Cell3G</th>
-                                        <th class="border px-2 py-1">Cell4G</th>
-                                        <th class="border px-2 py-1">NodeName</th>
-                                        <th class="border px-2 py-1">NodeType</th>
+                                        <th class="border px-2 py-2">N°</th>
+                                        <th class="border px-2 py-2">Nom du site</th>
+                                        <th class="border px-2 py-2">Cell2G</th>
+                                        <th class="border px-2 py-2">Cell3G</th>
+                                        <th class="border px-2 py-2">Cell4G</th>
+                                        <th class="border px-2 py-2">NodeName</th>
+                                        <th class="border px-2 py-2">NodeType</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,7 +137,7 @@
                 Vous tentez d'accéder à une page non autorisée.<br>
                 Pour y avoir accès, merci de contacter un administrateur.
             </p>
-                            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
         </div>
     </div>
     @endif

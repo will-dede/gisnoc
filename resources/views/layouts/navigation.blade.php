@@ -24,7 +24,7 @@
                     <x-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
                         {{ __('Sites') }}
                     </x-nav-link>
-                    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
+                    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                         <x-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
                             {{ __('BSC') }}
                         </x-nav-link>
@@ -81,9 +81,8 @@
                     </div>
                     @endif
                     
-                    
                     <!-- Si l'utilisateur est superadmin, il peut voir les liens suivants -->
-                    @if(auth()->check() && auth()->user()->role === 'superadmin')
+                    @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Utilisateurs') }}
                         </x-nav-link>
@@ -152,7 +151,7 @@
             <x-responsive-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
                 {{ __('Sites') }}
             </x-responsive-nav-link>
-            @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
+            @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                 <x-responsive-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
                     {{ __('BSC') }}
                 </x-responsive-nav-link>

@@ -1,12 +1,12 @@
 <x-app-layout>
-    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détail du BSC</h1>
-                        @if(auth()->user()->role === 'superadmin')
+                        @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('bscs.edit', $bsc) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -38,32 +38,51 @@
                     </div>                    
                 </div>
             </div>
-            @if($bsc->sites && $bsc->sites->count() > 0)
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white border">
-                        <thead>
-                            <tr>
-                                <th class="border px-2 py-2">Nom du site</th>
-                                <th class="border px-2 py-2">NodeName</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($bsc->sites as $site)
-                                <tr>
-                                    <td class="border px-2 py-1 text-sm text-gray-900">
-                                        <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-900 hover:bg-blue-50 rounded" style="display:block; width:100%">
-                                            {{ $site->nom_site }}
-                                        </a>
-                                    </td>
-                                    <td class="border px-2 py-1 text-sm text-center text-gray-900">{{ $site->nodeName ?? '' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+
+            <!-- Liste des sites -->
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-6">Sites attribués</h2>
+
+                    @if($bsc->sites && $bsc->sites->count() > 0)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="border px-2 py-1">N°</th>
+                                        <th class="border px-2 py-2">Nom du site</th>
+                                        <th class="border px-2 py-2">Cell2G</th>
+                                        <th class="border px-2 py-2">NodeName</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $i = 1;
+                                    @endphp
+                                    @foreach($bsc->sites as $site)
+                                        <tr>
+                                            <td class="border px-2 py-1 text-center text-base text-gray-900">{{ $i++ }}</td>
+                                            <td class="border px-2 py-1 text-sm text-gray-900">
+                                                <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-900 hover:bg-blue-50 rounded" style="display:block; width:100%">
+                                                    {{ $site->nom_site }}
+                                                </a>
+                                            </td>
+                                            <td class="border px-2 py-1 text-sm text-center text-gray-900">{{ $site->cell2G ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-sm text-center text-gray-900">{{ $site->nodeName ?? '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-4 text-gray-500">
+                            Aucun site associé à ce BSC
+                        </div>
+                    @endif
                 </div>
-            @endif
-        </div>
-    </div>
+            </div>
+    
+
     <!-- Modal de Confirmation de Suppression -->
     <div id="deleteModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
         <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
@@ -96,7 +115,7 @@
                 Vous tentez d'accéder à une page non autorisée.<br>
                 Pour y avoir accès, merci de contacter un administrateur.
             </p>
-            <a href="{{ route('dashboard') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Voir les incidents</a>
         </div>
     </div>
     @endif

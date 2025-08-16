@@ -1,12 +1,15 @@
 <x-app-layout>
+    @if(auth()->check())
     <div class="container mx-auto p-4">
         <div class="max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des types d'alarme</h1>
+                @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                 <a href="{{ route('typealarme.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                     <i class="fas fa-plus"></i>
                     <span>Ajouter un type</span>
                 </a>
+                @endif
             </div>
 
             @if(session('success'))
@@ -17,19 +20,19 @@
             @endif
 
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="border px-2 py-1">N°</th>
-                        <th class="border px-2 py-1">Nom du type</th>
-                        <th class="border px-2 py-1">Description</th>
-                        <th class="border px-2 py-1">Actions</th>
+                        <th class="border px-2 py-2">N°</th>
+                        <th class="border px-2 py-2">Nom du type</th>
+                        <th class="border px-2 py-2">Description</th>
+                        <th class="border px-2 py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php
                         $i = 1;
                     @endphp
-                    @forelse($typealarme as $type)
+                    @forelse($typesAlarme as $type)
                         <tr>
                             <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
                             <td class="border px-2 py-1">{{ $type->nom_type_alarme }}</td>
@@ -39,10 +42,6 @@
                                     <a href="{{ route('typealarme.show', $type) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
                                         <i class="fas fa-eye text-sm"></i>
                                         <span class="text-sm">Détails</span>
-                                    </a>
-                                    <a href="{{ route('typealarme.edit', $type) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
-                                        <i class="fas fa-edit text-sm"></i>
-                                        <span class="text-sm">Modifier</span>
                                     </a>
                                 </div>
                             </td>
@@ -56,4 +55,5 @@
             </table>
         </div>
     </div>
+    @endif
 </x-app-layout> 

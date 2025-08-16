@@ -44,7 +44,7 @@ class UserController extends Controller
             'firstname' => ['required', 'string', 'max:255'],
             'telephone' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role' => ['required', 'string', 'in:user,admin,superadmin'],
+            'role' => ['required', 'string', 'in:user,noc_engineer,network_lead,superadmin'],
         ]);
         $user->update($validated);
         return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour.');
@@ -58,9 +58,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Utilisateur validé avec succès.');
     }
 
-    /**
-     * Refuse (supprime) un utilisateur en attente (superadmin).
-     */
+    // Refuse (supprime) un utilisateur en attente (superadmin).
     public function refuseUser(User $user)
     {
         if (!$user->is_validated) {
@@ -70,17 +68,13 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('error', 'Impossible de refuser un utilisateur déjà validé.');
     }
 
-    /**
-     * Affiche le formulaire de création d'un utilisateur (superadmin).
-     */
+    // Affiche le formulaire de création d'un utilisateur (superadmin).
     public function create()
     {
         return view('users.create');
     }
 
-    /**
-     * Enregistre un nouvel utilisateur (superadmin).
-     */
+    // Enregistre un nouvel utilisateur (superadmin).
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -88,7 +82,7 @@ class UserController extends Controller
             'firstname' => ['required', 'string', 'max:255'],
             'telephone' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'role' => ['required', 'string', 'in:user,admin,superadmin'],
+            'role' => ['required', 'string', 'in:user,noc_engineer,network_lead,superadmin'],
             'password' => ['nullable', 'string', 'min:6'],
         ]);
         $password = $validated['password'] ?? 'password';

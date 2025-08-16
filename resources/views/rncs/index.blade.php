@@ -1,10 +1,10 @@
 <x-app-layout>
-    @if(auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'superadmin'))
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto p-4">
         <div class="max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des RNC</h1>
-                @if(auth()->user()->role === 'superadmin')
+                @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                 <a href="{{ route('rncs.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                     <i class="fas fa-plus"></i>
                     <span>Ajouter un RNC</span>
@@ -25,7 +25,7 @@
                 <div class="bg-red-100 text-red-800 p-2 rounded mb-4">{{ session('error') }}</div>
             @endif
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom RNC</th>
@@ -67,7 +67,7 @@
                 Vous tentez d'accéder à une page non autorisée.<br>
                 Pour y avoir accès, merci de contacter un administrateur.
             </p>
-                            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
         </div>
     </div>
     @endif

@@ -5,6 +5,7 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détail de la fréquence</h1>
+                        @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                         <div class="flex space-x-2">
                             <a href="{{ route('frequences.edit', $frequence) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -15,23 +16,26 @@
                                 <span class="text-xs">Supprimer</span>
                             </button>
                         </div>
+                        @endif
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">ID</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $frequence->id }}</p>
-                            </div>
+                            {{--
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">ID</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $frequence->id }}</p>
+                                </div>
+                            --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nom</label>
                                 <p class="mt-1 text-sm text-gray-900">{{ $frequence->nom_freq }}</p>
                             </div>
-                        </div>
-                        <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Technologie</label>
                                 <p class="mt-1 text-sm text-gray-900">{{ $frequence->technologie->nom_technologie ?? '-' }}</p>
                             </div>
+                        </div>
+                        <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Date de création</label>
                                 <p class="mt-1 text-sm text-gray-900">{{ $frequence->created_at->format('d/m/Y H:i') }}</p>
@@ -45,7 +49,7 @@
                 </div>
             </div>
             <div class="mt-6">
-                <a href="{{ route('frequences.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
+                <a href="{{ route('frequences.index') }}" class="inline-flex items-center px-1 py-1 text-blue-800 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
                     <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des fréquences
                 </a>
             </div>

@@ -1,8 +1,9 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="w-full max-w-md mx-auto mt-10">
         <form method="POST" action="{{ route('typesite.store') }}" class="bg-white shadow rounded p-8">
             @csrf
-            <h1 class="text-2xl font-bold mb-6 text-center">Ajouter un type de site</h1>
+            <h1 class="text-2xl font-bold mb-6 text-center">Ajouter un node type</h1>
             @if(session('success'))
                 <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
             @endif
@@ -20,4 +21,16 @@
             </div>
         </form>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+                Pour y avoir accès, merci de contacter un administrateur.
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if(auth()->check() && auth()->user()->role === 'admin')
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-gray-800 mb-6">Modifier l'incident #{{ $incident->id }}</h1>
@@ -367,7 +367,6 @@
             </form>
         </div>
     </div>
-    @endif
 
     <style>
         /* Aération des cases à cocher */
@@ -656,4 +655,15 @@
         renderCumulativeTable();
     });
     </script>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Désolé, cet espace est réservé au NOC Engineer !
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

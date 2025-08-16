@@ -1,10 +1,12 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h1 class="text-2xl font-semibold text-gray-800">Détail de la zone de maintenance</h1>
+                        @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('zonemaintenance.edit', $zonemaintenance) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -15,6 +17,7 @@
                                 <span class="text-xs">Supprimer</span>
                             </button>
                         </div>
+                        @endif
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-4">
@@ -71,4 +74,16 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+                Pour y avoir accès, merci de contacter un administrateur.
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

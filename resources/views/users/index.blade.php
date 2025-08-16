@@ -1,9 +1,10 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="container mx-auto p-4">
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des utilisateurs</h1>
-                @if(auth()->user()->role === 'superadmin')
+                @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                     <a href="{{ route('users.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span>Ajouter un utilisateur</span>
@@ -25,7 +26,7 @@
             @endif
 
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom</th>
@@ -40,7 +41,7 @@
                 <tbody>
                     @php
                         $i = 1;
-                    @endphp
+                        @endphp
                     @forelse($users as $user)
                         <tr>
                             <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
@@ -48,7 +49,17 @@
                             <td class="border px-2 py-1">{{ $user->firstname }}</td>
                             <td class="border px-2 py-1">{{ $user->telephone }}</td>
                             <td class="border px-2 py-1">{{ $user->email }}</td>
-                            <td class="border px-2 py-1">{{ $user->role }}</td>
+                            <td class="border px-2 py-1">
+                                @if($user->role === 'user')
+                                    <span class="text-sm">Network observer</span>
+                                @elseif($user->role === 'noc_engineer')
+                                    <span class="text-sm">NOC Engineer</span>
+                                @elseif($user->role === 'network_lead')
+                                    <span class="text-sm">Network Lead</span>
+                                @elseif($user->role === 'superadmin')
+                                    <span class="text-sm">Super admin</span>
+                                @endif
+                            </td>
                             <td class="border px-2 py-1">
                                 @if($user->is_validated)
                                     <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Validé</span>
@@ -62,10 +73,12 @@
                                         <i class="fas fa-eye text-sm"></i>
                                         <span class="text-sm">Voir</span>
                                     </a>
+                                    @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                                     <a href="{{ route('users.edit', $user) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
                                         <i class="fas fa-edit text-sm"></i>
                                         <span class="text-sm">Modifier</span>
                                     </a>
+                                    @endif
                                     @if(auth()->user()->role === 'superadmin' && !$user->is_validated)
                                         <form action="{{ route('users.validate', $user) }}" method="POST" class="inline">
                                             @csrf
@@ -101,4 +114,15 @@
             </div>
         </div>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

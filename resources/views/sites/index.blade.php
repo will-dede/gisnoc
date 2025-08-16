@@ -3,13 +3,11 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des sites</h1>
-                @if(auth()->check() && auth()->user()->role === 'superadmin')
+                @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                 <a href="{{ route('sites.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-plus text-sm"></i> Ajouter un site</a>
                 @endif
             </div>
             <form method="GET" action="" class="mb-4 flex gap-2">
-                {{-- A afficher plus tard... --}}
-                {{--
                 <select name="search_type" class="border rounded px-2 py-1" style="padding-right:35px">
                     <option value="all" {{ request('search_type', 'all') == 'all' ? 'selected' : '' }}>Tout rechercher</option>
                     <option value="nom_site" {{ request('search_type') == 'nom_site' ? 'selected' : '' }}>Nom du site</option>
@@ -20,7 +18,6 @@
                     <option value="ip3G" {{ request('search_type') == 'ip3G' ? 'selected' : '' }}>IP 3G</option>
                     <option value="ip4G" {{ request('search_type') == 'ip4G' ? 'selected' : '' }}>IP 4G</option>
                 </select>
-                --}}
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Terme de recherche..." class="border rounded px-2 py-1 w-64" />
                 <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Rechercher</button>
             </form>
@@ -32,7 +29,7 @@
             @endif
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border">
-                    <thead>
+                    <thead class="bg-gray-50">
                         <tr>
                             <th class="border px-2 py-1">N°</th>
                             <th class="border px-2 py-1">Nom</th>

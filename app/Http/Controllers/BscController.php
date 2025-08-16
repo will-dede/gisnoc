@@ -44,7 +44,7 @@ class BscController extends Controller
         
         try {
             Bsc::create($validatedData);
-            return redirect()->route('bscs.create')->with('success', 'BSC créé avec succès.');
+            return redirect()->route('bscs.index')->with('success', 'BSC créé avec succès.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la création du BSC.')->withInput();
         }
@@ -53,6 +53,9 @@ class BscController extends Controller
     // Affiche les détails d'une BSC
     public function show(Bsc $bsc)
     {
+        $bsc->load(['sites' => function ($query){
+            $query->orderBy('nom_site');
+        }]);
         return view('bscs.show', compact('bsc'));
     }
 

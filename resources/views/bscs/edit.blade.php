@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if(auth()->check() && auth()->user()->role === 'superadmin')
+@if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="w-full max-w-md mx-auto mt-10">
         <form method="POST" action="{{ route('bscs.update', $bsc) }}" class="bg-white shadow rounded p-8">
             @csrf
@@ -29,7 +29,7 @@
                     Vous tentez d'accéder à une page non autorisée.<br>
                     Pour y avoir accès, merci de contacter un administrateur.
                 </p>
-                <a href="{{ route('dashboard') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retour au tableau de bord</a>
+                <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Voir les incidents</a>
             </div>
         </div>
         @endif

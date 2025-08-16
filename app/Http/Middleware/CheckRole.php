@@ -52,7 +52,7 @@ class CheckRole
                 'incidents.edit',
                 'incidents.delete',
             ],
-            'admin' => [
+            'noc_engineer' => [
                 'sites.view',
                 'sites.create',
                 'sites.edit',

@@ -44,7 +44,7 @@ class RncController extends Controller
         
         try {
             Rnc::create($validatedData);
-            return redirect()->route('rncs.create')->with('success', 'RNC créé avec succès.');
+            return redirect()->route('rncs.index')->with('success', 'RNC créé avec succès.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la création du RNC.')->withInput();
         }
@@ -53,6 +53,9 @@ class RncController extends Controller
     // Affiche les détails d'une RNC
     public function show(Rnc $rnc)
     {
+        $rnc->load(['sites' => function ($query){
+            $query->orderBy('nom_site');
+        }]);
         return view('rncs.show', compact('rnc'));
     }
 

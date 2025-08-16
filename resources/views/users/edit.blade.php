@@ -1,4 +1,5 @@
 <x-app-layout>
+    @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="flex items-center justify-center min-h-screen">
         <div class="w-full max-w-md">
             <h1 class="text-2xl font-bold mb-4 text-center">Modifier l'utilisateur</h1>
@@ -24,9 +25,9 @@
                 <div class="mb-4">
                     <label for="role" class="block font-semibold">Rôle <span class="text-red-500">*</span></label>
                     <select name="role" id="role" class="border rounded px-2 py-1 w-full" required>
-                        <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>Utilisateur</option>
-                        <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Administrateur</option>
-                        <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Administrateur</option>
+                        <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>Operations Observer</option>
+                        <option value="noc_engineer" {{ old('role', $user->role) == 'noc_engineer' ? 'selected' : '' }}>NOC Engineer</option>
+                        <option value="network_lead" {{ old('role', $user->role) == 'network_lead' ? 'selected' : '' }}>Network Lead</option>
                     </select>
                 </div>
                 <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full">Mettre à jour</button>
@@ -34,4 +35,15 @@
             </form>
         </div>
     </div>
+    @else
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">
+            <h1 class="text-2xl font-bold mb-6" style="color:red"><i class="fa-solid fa-triangle-exclamation"></i> Accès non autorisé !</h1>
+            <p class="mb-6">
+                Vous tentez d'accéder à une page non autorisée.<br>
+            </p>
+            <a href="{{ route('incidents.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full mb-2">Retourner à la liste des incidents</a>
+        </div>
+    </div>
+    @endif
 </x-app-layout> 

@@ -16,9 +16,9 @@ class ZoneMaintenanceController extends Controller
     // Affiche la liste des zones de maintenance
     public function index()
     {
-        $zones = ZoneMaintenance::withCount('sites')->get();
-        // $zones = ZoneMaintenance::paginate(10); // Pour la pagination
-        return view('zonemaintenance.index', compact('zones'));
+        $zonemaintenance = ZoneMaintenance::withCount('sites')->get();
+        // $zonemaintenance = ZoneMaintenance::paginate(10); // Pour la pagination
+        return view('zonemaintenance.index', compact('zonemaintenance'));
     }
 
     // Affiche le formulaire de création d'une zone de maintenance
@@ -34,7 +34,7 @@ class ZoneMaintenanceController extends Controller
         
         try {
             ZoneMaintenance::create($validatedData);
-            return redirect()->route('zonemaintenance.create')
+            return redirect()->route('zonemaintenance.index')
                 ->with('success', self::SUCCESS_CREATE);
         } catch (\Exception $e) {
             return redirect()->back()

@@ -1,10 +1,12 @@
 <x-app-layout>
+    @if(auth()->check())
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-2xl mx-auto">
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-semibold text-gray-800">Détail du type d'alarme</h1>
+                        <h1 class="text-2xl font-semibold text-gray-800">Détails du type d'alarme</h1>
+                        @if(auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('typealarme.edit', $typealarme) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -15,6 +17,7 @@
                                 <span class="text-xs">Supprimer</span>
                             </button>
                         </div>
+                        @endif
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-4">
@@ -75,4 +78,5 @@
             </div>
         </div>
     </div>
+    @endif
 </x-app-layout> 

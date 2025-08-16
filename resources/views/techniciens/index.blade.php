@@ -3,10 +3,12 @@
         <div class="max-w-6xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des techniciens</h1>
+                @if(auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                 <a href="{{ route('techniciens.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                     <i class="fas fa-plus"></i>
                     <span>Ajouter un technicien</span>
                 </a>
+                @endif
             </div>
 
             {{-- Barre de recherche --}}
@@ -23,7 +25,7 @@
             @endif
 
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
                         <th class="border px-2 py-1">N°</th>
                         <th class="border px-2 py-1">Nom</th>
@@ -41,11 +43,12 @@
                     @forelse($techniciens as $technicien)
                         <tr>
                             <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
-                            <td class="border px-2 py-1">{{ $technicien->nom_technicien }}</td>
-                            <td class="border px-2 py-1">{{ $technicien->prenom_technicien }}</td>
-                            <td class="border px-2 py-1">{{ $technicien->telephone_technicien }}</td>
+                            <td class="border px-2 py-1">{{ $technicien->nom_tech }}</td>
+                            <td class="border px-2 py-1">{{ $technicien->prenom_tech }}</td>
+                            <td class="border px-2 py-1 text-center">{{ $technicien->tel_tech }}</td>
                             <td class="border px-2 py-1">{{ $technicien->zoneMaintenance->nom_zone ?? '-' }}</td>
-                            <td class="border px-2 py-1">
+                            <td class="border px-2 py-1 text-center">
+                                {{-- Affichage de l'état propriétaire --}}
                                 @if($technicien->est_proprietaire)
                                     <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Oui</span>
                                 @else
@@ -57,10 +60,6 @@
                                     <a href="{{ route('techniciens.show', $technicien) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">
                                         <i class="fas fa-eye text-sm"></i>
                                         <span class="text-sm">Détails</span>
-                                    </a>
-                                    <a href="{{ route('techniciens.edit', $technicien) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
-                                        <i class="fas fa-edit text-sm"></i>
-                                        <span class="text-sm">Modifier</span>
                                     </a>
                                 </div>
                             </td>

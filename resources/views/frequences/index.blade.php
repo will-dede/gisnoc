@@ -3,10 +3,12 @@
         <div class="max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des fréquences</h1>
+                @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                 <a href="{{ route('frequences.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                     <i class="fas fa-plus"></i>
                     <span>Ajouter une fréquence</span>
                 </a>
+                @endif
             </div>
 
             @if(session('success'))
@@ -17,12 +19,12 @@
             @endif
 
             <table class="min-w-full bg-white border">
-                <thead>
+                <thead class="bg-gray-50">
                     <tr>
-                        <th class="border px-2 py-1">N°</th>
-                        <th class="border px-2 py-1">Technologie</th>
-                        <th class="border px-2 py-1">Fréquence</th>
-                        <th class="border px-2 py-1">Actions</th>
+                        <th class="border px-2 py-2">N°</th>
+                        <th class="border px-2 py-2">Technologie</th>
+                        <th class="border px-2 py-2">Fréquence</th>
+                        <th class="border px-2 py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,18 +42,6 @@
                                         <i class="fas fa-eye text-sm"></i>
                                         <span class="text-sm">Détails</span>
                                     </a>
-                                    <a href="{{ route('frequences.edit', $frequence) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900 mx-2">
-                                        <i class="fas fa-edit text-sm"></i>
-                                        <span class="text-sm">Modifier</span>
-                                    </a>
-                                    <form action="{{ route('frequences.destroy', $frequence) }}" method="POST" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="flex flex-col items-center text-red-600 hover:text-red-900 mx-2" onclick="return confirm('Supprimer cette fréquence ?')">
-                                            <i class="fas fa-trash-alt text-sm"></i>
-                                            <span class="text-sm">Supprimer</span>
-                                        </button>
-                                    </form>
                                 </div>
                             </td>
                         </tr>

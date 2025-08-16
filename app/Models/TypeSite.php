@@ -13,7 +13,7 @@ class TypeSite extends Model
         'nom_type_site'
     ];
 
-    // Relation one-to-many avec Site (un type de site peut avoir plusieurs sites)
+    // Relation one-to-many avec Site (un node type peut avoir plusieurs sites)
     public function sites()
     {
         return $this->hasMany(Site::class);

@@ -31,7 +31,7 @@ class RequirePermission
                 'incidents.edit',
                 'incidents.delete',
             ],
-            'admin' => [
+            'noc_engineer' => [
                 // Permissions de lecture uniquement pour les informations opérationnelles
                 'regions.view',
                 'secteurs.view',
