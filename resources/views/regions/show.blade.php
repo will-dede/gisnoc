@@ -6,7 +6,12 @@
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-semibold text-gray-800">Détails de la région</h1>
+                        <div class="flex">
+                            <a href="{{ route('regions.index') }}" class="inline-flex text-center items-center px-1 py-1 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
+                                <i class="fas fa-arrow-left mr-2 text-center"></i> &nbsp;
+                            </a>
+                            <h1 class="text-2xl font-semibold text-gray-800">Détails de la région</h1>
+                        </div>
                         @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                         <div class="flex space-x-2">
                             <a href="{{ route('regions.edit', $region) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
@@ -21,9 +26,6 @@
                             </button>
                         </div>
                         @endif
-                        <a href="{{ route('regions.index') }}" class="inline-flex items-center px-1 py-1 text-blue-800 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
-                            <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des régions
-                        </a>
                     </div>
 
                     <!-- Informations principales -->

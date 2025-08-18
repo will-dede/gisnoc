@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('regions', \App\Http\Controllers\RegionController::class);
     Route::resource('secteurs', \App\Http\Controllers\SecteurController::class);
     Route::resource('sites', \App\Http\Controllers\SiteController::class);
+    Route::get('/sites/{site}/incidents', [\App\Http\Controllers\SiteController::class, 'incidents'])->name('sites.incidents');
     Route::resource('techniciens', \App\Http\Controllers\TechnicienController::class);
     // Route::resource('mecaniciens', \App\Http\Controllers\MecanicienController::class);
     Route::resource('incidents', \App\Http\Controllers\IncidentController::class);

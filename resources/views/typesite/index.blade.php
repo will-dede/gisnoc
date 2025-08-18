@@ -3,7 +3,7 @@
     <div class="container mx-auto p-4">
         <div class="max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-bold">Liste des types de site</h1>
+                <h1 class="text-2xl font-bold">Liste des NodeType</h1>
                 @if(auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin')
                 <a href="{{ route('typesite.create') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center gap-2">
                     <i class="fas fa-plus"></i>

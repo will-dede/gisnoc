@@ -76,7 +76,7 @@
     
                 <!-- Statistiques -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
-                    <div class="bg-white rounded-lg flex items-center shadow p-4">
+                    <div class="bg-white rounded-lg flex items-center shadow p-3">
                         <div class="flex items-center">
                             <div class="p-2 bg-red-100 rounded-lg">
                                 <i class="fas fa-exclamation-triangle text-red-600"></i>
@@ -88,13 +88,13 @@
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg flex items-center shadow p-4">
+                    <div class="bg-white rounded-lg flex items-center shadow p-3">
                         <div class="flex items-center">
                             <div class="p-2 bg-yellow-100 rounded-lg">
                                 <i class="fas fa-clock text-yellow-600"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-600">Durée moyenne</p>
+                                <p class="text-sm font-medium text-gray-600">Downtime moyen</p>
                                 <p class="text-2xl font-bold text-gray-900">
                                     @php
                                         $totalDuration = 0;
@@ -113,15 +113,24 @@
                         </div>
                     </div>
                     
-                    <div class="bg-white rounded-lg flex items-center shadow p-4">
+                    <div class="bg-white rounded-lg flex items-center shadow p-3">
                         <div class="flex items-center">
                             <div class="p-2 bg-green-100 rounded-lg">
-                                <i class="fas fa-calendar text-green-600"></i>
+                                <i class="fas fa-clock text-green-600"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-600">Dernier incident</p>
+                                <p class="text-sm font-medium text-gray-600">Downtime cumulé</p>
                                 <p class="text-sm font-bold text-gray-900">
-                                    {{ $incidents->first() && $incidents->first()->pivot->date_debut_incident ? \Carbon\Carbon::parse($incidents->first()->pivot->date_debut_incident)->format('d/m/Y') : '-' }}
+                                    @php
+                                        $totalDuration = 0;
+                                        foreach($incidents as $incident) {
+                                            if($incident->pivot->date_debut_incident && $incident->pivot->date_fin_incident) {
+                                                $duration = \Carbon\Carbon::parse($incident->pivot->date_debut_incident)->diffInMinutes(\Carbon\Carbon::parse($incident->pivot->date_fin_incident));
+                                                $totalDuration += $duration;
+                                            }
+                                        }
+                                        echo $totalDuration > 0 ? $totalDuration . ' min' : '-';
+                                    @endphp
                                 </p>
                             </div>
                         </div>

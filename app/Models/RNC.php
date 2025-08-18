@@ -18,4 +18,4 @@ class Rnc extends Model
     {
         return $this->hasMany(Site::class);
     }
-} 
+}

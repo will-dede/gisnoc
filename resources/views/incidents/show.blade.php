@@ -4,9 +4,13 @@
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-semibold text-gray-800">Détails de l'incident #{{ $incident->id }}</h1>
+                        <div class="flex">
+                            <a href="{{ route('incidents.index') }}" class="inline-flex text-center items-center px-1 py-1 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
+                                <i class="fas fa-arrow-left mr-2"></i> &nbsp;
+                            </a>
+                            <h1 class="text-2xl font-semibold text-gray-800">Détails de l'incident #{{ $incident->id }}</h1>
+                        </div>
                         @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
-
                         <div class="flex space-x-2">
                             <a href="{{ route('incidents.edit', $incident) }}" class="flex flex-col items-center text-yellow-600 hover:text-yellow-900">
                                 <i class="fas fa-edit text-xl mb-1"></i>
@@ -26,41 +30,110 @@
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Site principal</label>
-                                <p class="mt-1 text-sm text-gray-900 font-medium uppercase">{{ $incident->site ? $incident->site->nom_site : '-' }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Type d'alarme</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->typeAlarme->nom_type_alarme ?? '-' }}</p>
-                                @if($incident->typeAlarme && $incident->typeAlarme->descr_type_alarme)
-                                    <p class="mt-1 text-xs text-gray-500">{{ $incident->typeAlarme->descr_type_alarme }}</p>
-                                @endif
+                                <label class="block text-sm font-medium text-gray-700">Nom du site</label>
+                                <p class="mt-1 text-sm text-gray-900 font-bold uppercase">{{ $incident->site ? $incident->site->nom_site : '-' }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Technicien contacté</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->technicien ? $incident->technicien->nom_tech . ' ' . $incident->technicien->prenom_tech : '-' }}</p>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->technicien ? $incident->technicien->nom_tech . ' ' . $incident->technicien->prenom_tech : '-' }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Intervenant</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->intervenant ?: '-' }}</p>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->intervenant ?: '-' }}</p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Inséré par</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
-                            </div>
+                            <!-- <div>
+                                <label class="block text-sm font-medium text-gray-700">Incident enregistré par</label>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
+                            </div> -->
                         </div>
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Date de création</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->created_at->format('d/m/Y H:i') }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Dernière modification</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->updated_at->format('d/m/Y H:i') }}</p>
-                            </div>
+                            {{--
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Date d'enregistrement</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $incident->created_at->format('d/m/Y H:i') }}</p>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Dernière modification</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $incident->updated_at->format('d/m/Y H:i') }}</p>
+                                </div>
+                            --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Zone de maintenance</label>
-                                <p class="mt-1 text-sm text-gray-900">{{ $incident->site->zoneMaintenance->nom_zone ?? '-' }}</p>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->site->zoneMaintenance->nom_zone ?? '-' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Secteurs concernés</label>
+                                @if($incident->secteurs && $incident->secteurs->count())
+                                <div class="mb-6">
+                                    <div class="mt-1 text-sm text-gray-900 font-bold">
+                                        <div class="flex flex-wrap gap-2">
+                                            <!-- @foreach($incident->secteurs as $secteur)
+                                                <div>
+                                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">{{ $secteur->nom_secteur }}</span>
+                                                </div>
+                                            @endforeach -->
+                                            <div>
+                                                @if($incident->secteurs && $incident->secteurs->count())
+                                                    @php
+                                                        // Regroupement par technologie > fréquence > secteurs
+                                                        $tree = [];
+                                                        $techObjects = [];
+                                                        $freqObjects = [];
+                                                        foreach($incident->secteurs as $secteur) {
+                                                            $freq = $secteur->frequence;
+                                                            $tech = $freq ? $freq->technologie : null;
+                                                            $techKey = $tech ? $tech->nom_technologie : '?';
+                                                            $freqKey = $freq ? $freq->nom_freq : '?';
+                                                            if (!isset($tree[$techKey])) $tree[$techKey] = [];
+                                                            if (!isset($tree[$techKey][$freqKey])) $tree[$techKey][$freqKey] = [];
+                                                            $tree[$techKey][$freqKey][] = $secteur->nom_secteur;
+                                                            if ($tech) $techObjects[$techKey] = $tech;
+                                                            if ($freq) $freqObjects[$techKey][$freqKey] = $freq;
+                                                        }
+                                                    @endphp
+                                                    <div class="flex flex-wrap gap-1">
+                                                        @foreach($tree as $techKey => $freqs)
+                                                            @php
+                                                                $tech = $techObjects[$techKey] ?? null;
+                                                                // Liste complète des secteurs pour cette techno (toutes fréquences)
+                                                                $allSecteursTech = $tech ? $tech->frequences->flatMap(function($f) { return $f->secteurs->pluck('nom_secteur'); })->sort()->values()->toArray() : [];
+                                                                $secteursTech = collect($freqs)->flatten()->sort()->values()->toArray();
+                                                            @endphp
+                                                            @if($allSecteursTech && $secteursTech === $allSecteursTech)
+                                                                <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                                    {{ $techKey }}
+                                                                </span>
+                                                            @else
+                                                                @foreach($freqs as $freqKey => $secteurs)
+                                                                    @php
+                                                                        $freq = $freqObjects[$techKey][$freqKey] ?? null;
+                                                                        $allSecteursFreq = $freq ? $freq->secteurs->pluck('nom_secteur')->sort()->values()->toArray() : [];
+                                                                        $secteursSorted = collect($secteurs)->sort()->values()->toArray();
+                                                                    @endphp
+                                                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                                                        {{ $techKey }} / {{ $freqKey }}@if($allSecteursFreq && $secteursSorted !== $allSecteursFreq) / {{ implode(', ', $secteursSorted) }}@endif
+                                                                    </span>
+                                                                @endforeach
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Type d'alarme</label>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->typeAlarme->nom_type_alarme ?? '-' }}</p>
+                                {{--
+                                    @if($incident->typeAlarme && $incident->typeAlarme->descr_type_alarme)
+                                        <p class="mt-1 text-xs text-gray-500">{{ $incident->typeAlarme->descr_type_alarme }}</p>
+                                    @endif
+                                --}}
                             </div>
                         </div>
                     </div>
@@ -68,39 +141,35 @@
                     <!-- Dates -->
                     <div class="mb-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-3">Dates de l'incident</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-blue-50 p-3 rounded">
-                                <label class="block text-sm font-medium text-blue-700">Début de l'incident</label>
-                                <p class="mt-1 text-sm text-blue-900">{{ $incident->date_debut_incident ? ( $incident->date_debut_incident instanceof \Carbon\Carbon ? $incident->date_debut_incident->format('d/m/Y H:i') : ( $incident->date_debut_incident ? \Carbon\Carbon::parse($incident->date_debut_incident)->format('d/m/Y H:i') : '-' ) ) : '-' }}</p>
+                        <div class="">
+                            <div class="grid grid-cols-3 gap-4 mb-4">
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-blue-700">Début de l'incident</label>
+                                    <p class="mt-1 text-sm text-blue-900">{{ $incident->date_debut_incident ? ( $incident->date_debut_incident instanceof \Carbon\Carbon ? $incident->date_debut_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_debut_incident)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-green-700">Fin de l'incident</label>
+                                    <p class="mt-1 text-sm text-green-900">{{ $incident->date_fin_incident ? ( $incident->date_fin_incident instanceof \Carbon\Carbon ? $incident->date_fin_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_fin_incident)->format('d/m/Y H:i') ) : 'En cours' }}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-gray-700">Downtime</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $incident->date_fin_incident && $incident->date_debut_incident ? \Carbon\Carbon::parse($incident->date_debut_incident)->diffInMinutes(\Carbon\Carbon::parse($incident->date_fin_incident)) . ' min' : '-' }}</p>
+                                </div>
                             </div>
-                            <div class="bg-green-50 p-3 rounded">
-                                <label class="block text-sm font-medium text-green-700">Fin de l'incident</label>
-                                <p class="mt-1 text-sm text-green-900">{{ $incident->date_fin_incident ? ( $incident->date_fin_incident instanceof \Carbon\Carbon ? $incident->date_fin_incident->format('d/m/Y H:i') : ( $incident->date_fin_incident ? \Carbon\Carbon::parse($incident->date_fin_incident)->format('d/m/Y H:i') : '-' ) ) : 'En cours' }}</p>
-                            </div>
-                            <div class="bg-orange-50 p-3 rounded">
-                                <label class="block text-sm font-medium text-orange-700">Contact du technicien</label>
-                                <p class="mt-1 text-sm text-orange-900">{{ $incident->date_contact_technicien ? ( $incident->date_contact_technicien instanceof \Carbon\Carbon ? $incident->date_contact_technicien->format('d/m/Y H:i') : ( $incident->date_contact_technicien ? \Carbon\Carbon::parse($incident->date_contact_technicien)->format('d/m/Y H:i') : '-' ) ) : '-' }}</p>
-                            </div>
-                            <div class="bg-purple-50 p-3 rounded">
-                                <label class="block text-sm font-medium text-purple-700">Arrivée sur site</label>
-                                <p class="mt-1 text-sm text-purple-900">{{ $incident->date_arrivee_sur_site ? ( $incident->date_arrivee_sur_site instanceof \Carbon\Carbon ? $incident->date_arrivee_sur_site->format('d/m/Y H:i') : ( $incident->date_arrivee_sur_site ? \Carbon\Carbon::parse($incident->date_arrivee_sur_site)->format('d/m/Y H:i') : '-' ) ) : '-' }}</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Secteurs concernés -->
-                    @if($incident->secteurs && $incident->secteurs->count())
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-3">Secteurs concernés ({{ $incident->secteurs->count() }})</h3>
-                        <div class="bg-gray-50 p-4 rounded">
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($incident->secteurs as $secteur)
-                                    <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">{{ $secteur->nom_secteur }}</span>
-                                @endforeach
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-orange-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-orange-700">Date de contact du technicien</label>
+                                    <p class="mt-1 text-sm text-orange-900">{{ $incident->date_contact_technicien ? ( $incident->date_contact_technicien instanceof \Carbon\Carbon ? $incident->date_contact_technicien->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_contact_technicien)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-purple-700">Arrivée sur site</label>
+                                    <p class="mt-1 text-sm text-purple-900">{{ $incident->date_arrivee_sur_site ? ( $incident->date_arrivee_sur_site instanceof \Carbon\Carbon ? $incident->date_arrivee_sur_site->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_arrivee_sur_site)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
                             </div>
                         </div>
+
                     </div>
-                    @endif
 
                     <!-- Sites impactés -->
                     @if($incident->sites->count() > 0)
@@ -258,13 +327,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-10 text-center">
+                            <label class="block text-sm font-medium text-gray-700">Incident enregistré par</label>
+                            <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="mt-6">
-                <a href="{{ route('incidents.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded focus:outline-none focus:shadow-outline">
-                    <i class="fas fa-arrow-left mr-2"></i> Retourner à la liste des incidents
-                </a>
             </div>
         </div>
     </div>

@@ -34,7 +34,7 @@
                     @forelse($zonemaintenance as $zone)
                         <tr>
                             <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
-                            <td class="border px-2 py-1">{{ $zone->nom_zone }}</td>
+                            <td class="border px-2 py-1">{{ $zone->nom_zone }} <span class="text-gray-500 text-sm">({{ $zone->sites->count() }} sites affectés)</span></td>
                             <td class="border px-2 py-1 text-center">
                                 <div class="flex space-x-4 justify-center font-bold">
                                     <a href="{{ route('zonemaintenance.show', $zone) }}" class="flex flex-col items-center text-blue-600 hover:text-blue-900 mx-2">

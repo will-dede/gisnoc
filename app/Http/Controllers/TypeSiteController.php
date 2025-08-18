@@ -13,7 +13,7 @@ class TypeSiteController extends Controller
     const SUCCESS_DELETE = 'Node type supprimé avec succès.';
     const ERROR_GENERAL = 'Une erreur est survenue : ';
 
-    // Affiche la liste des types de sites
+    // Affiche la liste des NodeTypes
     public function index()
     {
         $typesSite = TypeSite::withCount('sites')->get();

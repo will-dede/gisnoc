@@ -4,19 +4,28 @@
             <div class="bg-white shadow-md rounded-lg overflow-hidden mb-8">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h1 class="text-2xl font-bold">Détails du site</h1>
+                        <div class="flex">
+                            <a href="{{ route('sites.index') }}" class="inline-flex text-center items-center px-1 py-1 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
+                                <i class="fas fa-arrow-left"></i> &nbsp;
+                            </a>
+                            <h1 class="text-2xl font-bold">Détails du site</h1>
+                        </div>
+                        @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
+                            <div class="flex space-x-2">
+                                <a href="{{ route('sites.edit', $site) }}" class="flex flex-col items-center mx-1 text-yellow-600 hover:text-yellow-900">
+                                    <i class="fas fa-edit text-xl mb-1"></i>
+                                    <span class="text-xs">Modifier</span>
+                                </a>
+                                <button type="button" onclick="document.getElementById('deleteModal').classList.remove('hidden')" class="flex flex-col items-center mx-1 text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash text-xl mb-1"></i>
+                                    <span class="text-xs">Supprimer</span>
+                                </button>
+                            </div>
+                        @endif
                         <div class="flex space-x-2">
-                            <a href="{{ route('sites.incidents', $site) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2">
+                            <a href="{{ route('sites.incidents', $site) }}" class="bg-blue-50 text-blue-800 px-4 py-2 rounded hover:bg-blue-100 hover:text-blue-800 flex items-center gap-2">
                                 <i class="fas fa-history"></i>
                                 <span>Historique des incidents</span>
-                            </a>
-                            <a href="{{ route('sites.edit', $site) }}" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 flex items-center gap-2">
-                                <i class="fas fa-edit"></i>
-                                <span>Modifier</span>
-                            </a>
-                            <a href="{{ route('sites.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 flex items-center gap-2">
-                                <i class="fas fa-arrow-left"></i>
-                                <span>Retour</span>
                             </a>
                         </div>
                     </div>

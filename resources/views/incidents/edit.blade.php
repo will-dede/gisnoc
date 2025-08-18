@@ -534,6 +534,7 @@
     });
 
     const data = @json($arbreTechnosFreqSecteurs);
+    const incidentSecteurs = @json($incident->secteurs->pluck('id'));
     const tableBody = document.getElementById('tech-freq-secteur-tbody');
 
     // Utilitaires pour générer les cases à cocher
@@ -578,7 +579,29 @@
         // Récupérer l'état actuel des cases cochées
         const checkedTechs = Array.from(tableBody.querySelectorAll('input[name="technologies[]"]:checked')).map(cb => cb.value);
         const checkedFreqs = Array.from(tableBody.querySelectorAll('input[name="frequences[]"]:checked')).map(cb => cb.value);
-        const checkedSecteurs = Array.from(tableBody.querySelectorAll('input[name="secteurs[]"]:checked')).map(cb => cb.value);
+        let checkedSecteurs = Array.from(tableBody.querySelectorAll('input[name="secteurs[]"]:checked')).map(cb => cb.value);
+        
+        // Au premier chargement, pré-cocher les secteurs existants de l'incident
+        if (checkedSecteurs.length === 0 && incidentSecteurs.length > 0) {
+            checkedSecteurs = incidentSecteurs.map(id => id.toString());
+            
+            // Pré-cocher automatiquement les technologies et fréquences nécessaires
+            Object.values(data).forEach(tech => {
+                Object.values(tech.frequences).forEach(freq => {
+                    const hasSecteurFromIncident = freq.secteurs.some(secteur => 
+                        incidentSecteurs.includes(secteur.id)
+                    );
+                    if (hasSecteurFromIncident) {
+                        if (!checkedTechs.includes(tech.id.toString())) {
+                            checkedTechs.push(tech.id.toString());
+                        }
+                        if (!checkedFreqs.includes(freq.id.toString())) {
+                            checkedFreqs.push(freq.id.toString());
+                        }
+                    }
+                });
+            });
+        }
         
         // 1. Technologies
         let techCol = '';

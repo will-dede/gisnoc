@@ -197,7 +197,7 @@ class IncidentController extends Controller
     $sites = Site::with(['technologies', 'zoneMaintenance'])->orderBy('nom_site', 'asc')->get();
 
     // Chargement des relations nécessaires pour l'incident
-    $incident->load(['site.technologies', 'technicien', 'typeAlarme']);
+    $incident->load(['site.technologies', 'technicien', 'typeAlarme', 'sites', 'secteurs']);
 
     // Construction de l'arbre des technologies, fréquences et secteurs
     $arbreTechnosFreqSecteurs = \App\Models\Technologie::with(['frequences.secteurs'])->get()->mapWithKeys(function($tech) {
@@ -223,7 +223,7 @@ class IncidentController extends Controller
         ];
     })->toArray();
 
-        return view('incidents.index', compact('incident', 'typesAlarme', 'techniciens', 'sites', 'arbreTechnosFreqSecteurs'));
+        return view('incidents.edit', compact('incident', 'typesAlarme', 'techniciens', 'sites', 'arbreTechnosFreqSecteurs'));
     }
 
 
@@ -232,14 +232,74 @@ class IncidentController extends Controller
     public function update(Request $request, Incident $incident)
     {
         try {
-            $request->validate($this->validationRules($incident->id));
+            // Validation des champs de l'incident principal
+            $validatedData = $request->validate([
+                'site_id' => 'required|exists:sites,id', // Site principal
+                'type_alarme_id' => 'required|exists:type_alarmes,id',
+                'technicien_id' => 'required|exists:techniciens,id',
+                'date_debut_incident' => 'required|date',
+                'date_fin_incident' => 'nullable|date|after_or_equal:date_debut_incident',
+                'date_contact_technicien' => 'nullable|date',
+                'date_arrivee_sur_site' => 'nullable|date',
+                'intervenant' => 'nullable|string|max:50',
+                'causes_incident' => 'nullable|string',
+                'actions_effectuees' => 'nullable|string',
+                'observation' => 'nullable|string',
+                'notes' => 'nullable|string',
+                // Validation des sites impactés (table pivot)
+                'sites_impactes' => 'nullable|array', // tableau d'ids de sites impactés
+                'sites_impactes.*.site_id' => 'required|exists:sites,id',
+                'sites_impactes.*.date_debut_incident' => 'nullable|date',
+                'sites_impactes.*.date_fin_incident' => 'nullable|date|after_or_equal:sites_impactes.*.date_debut_incident',
+                'sites_impactes.*.date_arrivee_sur_site' => 'nullable|date',
+                'sites_impactes.*.intervenant' => 'nullable|string|max:50',
+                'sites_impactes.*.causes_incident' => 'nullable|string',
+                'sites_impactes.*.actions_effectuees' => 'nullable|string',
+                'sites_impactes.*.observation' => 'nullable|string',
+                'sites_impactes.*.notes' => 'nullable|string',
+                'sites_impactes.*.technicien_id' => 'nullable|exists:techniciens,id',
+                'sites_impactes.*.type_alarme_id' => 'nullable|exists:type_alarmes,id',
+            ]);
 
-            $incident->update($request->all());
+            // Mise à jour de l'incident principal
+            $incident->update($validatedData);
 
-            return redirect()->route('incidents.show')
+            // Mise à jour des sites impactés avec toutes les infos de la table pivot
+            if ($request->has('sites_impactes')) {
+                $pivotData = [];
+                foreach ($request->sites_impactes as $pivot) {
+                    $pivotData[$pivot['site_id']] = [
+                        'date_debut_incident' => $pivot['date_debut_incident'] ?? null,
+                        'date_fin_incident' => $pivot['date_fin_incident'] ?? null,
+                        'date_arrivee_sur_site' => $pivot['date_arrivee_sur_site'] ?? null,
+                        'intervenant' => $pivot['intervenant'] ?? null,
+                        'causes_incident' => $pivot['causes_incident'] ?? null,
+                        'actions_effectuees' => $pivot['actions_effectuees'] ?? null,
+                        'observation' => $pivot['observation'] ?? null,
+                        'notes' => $pivot['notes'] ?? null,
+                        'technicien_id' => $pivot['technicien_id'] ?? null,
+                        'type_alarme_id' => $pivot['type_alarme_id'] ?? null,
+                    ];
+                }
+                $incident->sites()->sync($pivotData);
+            } else {
+                // Si aucun site impacté, supprimer toutes les relations
+                $incident->sites()->detach();
+            }
+
+            // Mise à jour des secteurs sélectionnés
+            if ($request->has('secteurs')) {
+                $incident->secteurs()->sync($request->secteurs);
+            } else {
+                // Si aucun secteur, supprimer toutes les relations
+                $incident->secteurs()->detach();
+            }
+
+            return redirect()->route('incidents.show', $incident)
                 ->with('success', self::SUCCESS_UPDATE);
         } catch (\Exception $e) {
             return redirect()->back()
+                ->withInput()
                 ->with('error', self::ERROR_GENERAL . $e->getMessage());
         }
     }

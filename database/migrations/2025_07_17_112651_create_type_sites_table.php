@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Création de la table des types de sites
+    // Création de la table des NodeTypes
     public function up()
     {
         Schema::create('type_sites', function (Blueprint $table) {
@@ -16,7 +16,7 @@ return new class extends Migration
         });
     }
 
-    // Suppression de la table des types de sites
+    // Suppression de la table des NodeTypes
     public function down()
     {
         Schema::dropIfExists('type_sites');

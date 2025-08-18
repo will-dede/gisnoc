@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if(auth()->check() && auth()->user()->role === 'superadmin')
+    @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
     <div class="w-full max-w-md mx-auto mt-10">
         <form method="POST" action="{{ route('regions.store') }}" class="bg-white shadow rounded p-8">
             @csrf

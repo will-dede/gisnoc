@@ -57,10 +57,10 @@
                                 @elseif($user->role === 'network_lead')
                                     <span class="text-sm">Network Lead</span>
                                 @elseif($user->role === 'superadmin')
-                                    <span class="text-sm">Super admin</span>
+                                    <span class="text-sm">Superadmin</span>
                                 @endif
                             </td>
-                            <td class="border px-2 py-1">
+                            <td class="border px-2 py-1 text-center">
                                 @if($user->is_validated)
                                     <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Validé</span>
                                 @else

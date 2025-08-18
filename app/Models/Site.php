@@ -33,13 +33,13 @@ class Site extends Model
     // Relation avec RNC
     public function rnc()
     {
-        return $this->belongsTo(RNC::class);
+        return $this->belongsTo(Rnc::class);
     }
 
     // Relation avec BSC
     public function bsc()
     {
-        return $this->belongsTo(BSC::class);
+        return $this->belongsTo(Bsc::class);
     }
 
     // Relation avec TypeSite

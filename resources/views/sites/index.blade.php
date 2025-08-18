@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-bold">Liste des sites</h1>
-                @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
+                @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                 <a href="{{ route('sites.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700"><i class="fas fa-plus text-sm"></i> Ajouter un site</a>
                 @endif
             </div>
@@ -50,7 +50,9 @@
                         @forelse($sites as $site)
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $i++ }}</td>
-                                <td class="border px-2 py-1 uppercase font-medium">{{ $site->nom_site }}</td>
+                                <td class="border px-2 py-1 uppercase font-medium">
+                                    <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-800">{{ $site->nom_site }}</a>
+                                </td>
                                 <td class="border px-2 py-1 text-xs uppercase">
                                     @if($site->cell2G)
                                         <div class="bg-blue-100 text-blue-800 px-1 rounded mb-1">2G: {{ $site->cell2G }}</div>
