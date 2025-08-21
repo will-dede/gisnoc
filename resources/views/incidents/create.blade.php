@@ -614,4 +614,19 @@
         </div>
     </div>
     @endif
+
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById('date_debut_incident');
+    if (!input.value) {
+        const now = new Date();
+        now.setSeconds(0, 0); // pour que les secondes soient toujours 00
+        const offset = now.getTimezoneOffset();
+        now.setMinutes(now.getMinutes() - offset); // ajuster au fuseau pour éviter le décalage
+        input.value = now.toISOString().slice(0,16);
+    }
+});
+</script>
+
 </x-app-layout> 

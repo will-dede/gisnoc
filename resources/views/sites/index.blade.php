@@ -31,16 +31,16 @@
                 <table class="min-w-full bg-white border">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="border px-2 py-1">N°</th>
-                            <th class="border px-2 py-1">Nom</th>
-                            <th class="border px-2 py-1">Cellules</th>
-                            <th class="border px-2 py-1">NodeName</th>
-                            <th class="border px-2 py-1">IPs</th>
-                            <th class="border px-2 py-1">Type</th>
-                            <th class="border px-2 py-1">BSC</th>
-                            <th class="border px-2 py-1">RNC</th>
-                            <th class="border px-2 py-1">Zone</th>
-                            <th class="border px-2 py-1">Actions</th>
+                            <th class="border px-2 py-2">N°</th>
+                            <th class="border px-2 py-2">Nom</th>
+                            <th class="border px-2 py-2">Cellules</th>
+                            <th class="border px-2 py-2">NodeName</th>
+                            <th class="border px-2 py-2">IPs</th>
+                            <th class="border px-2 py-2">NodeType</th>
+                            <th class="border px-2 py-2">BSC</th>
+                            <th class="border px-2 py-2">RNC</th>
+                            <th class="border px-2 py-2">Zone</th>
+                            <th class="border px-2 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

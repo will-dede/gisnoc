@@ -30,7 +30,7 @@
                             <p class="mt-1 text-sm text-gray-900 font-bold">{{ $bsc->nom_bsc }}</p>
                         </div>
                         <div>
-                            <label class="block text-sm text-gray-700">Date de création</label>
+                            <label class="block text-sm text-gray-700">Date d'enregistrement</label>
                             <p class="mt-1 text-sm text-gray-900 font-bold">{{ $bsc->created_at->format('d/m/Y H:i') }}</p>
                         </div>
                         <div>
