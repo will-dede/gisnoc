@@ -79,7 +79,7 @@
                 </p>
                 <p class="signup-text font-bold text-center">
                     <a href="{{ route('register') }}">
-                        {{ __('Inscrivez-vous') }}
+                        {{ __('Demander une inscription') }}
                     </a>
                 </p>
             </div>

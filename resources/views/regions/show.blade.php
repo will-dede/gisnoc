@@ -35,7 +35,7 @@
                             <p class="mt-1 text-sm font-bold text-gray-700">{{ $region->nom_region }}</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-500">Date de création</label>
+                            <label class="block text-sm font-medium text-gray-500">Date d'enregistrement</label>
                             <p class="mt-1 text-sm font-bold text-gray-700">{{ $region->created_at->format('d/m/Y H:i') }}</p>
                         </div>
                         <div class="">
@@ -58,6 +58,7 @@
                                     <tr>
                                         <th class="border px-2 py-2">N°</th>
                                         <th class="border px-2 py-2">Nom du site</th>
+                                        <th class="border px-2 py-2">Canal</th>
                                         <th class="border px-2 py-2">Cell2G</th>
                                         <th class="border px-2 py-2">Cell3G</th>
                                         <th class="border px-2 py-2">Cell4G</th>
@@ -77,6 +78,7 @@
                                                     {{ $site->nom_site }}
                                                 </a>
                                             </td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->canal ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell2G ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell3G ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell4G ?? '' }}</td>

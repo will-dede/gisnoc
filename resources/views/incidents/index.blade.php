@@ -146,25 +146,45 @@
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center flex-1">
                 <h1 class="text-2xl font-bold p-2 text-gray-800 mx-3">Liste des incidents</h1>
-                <form action="{{ route('incidents.index') }}" method="GET" class="relative flex items-center">
-                    <div class="relative flex">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" 
-                               name="search" 
-                               value="{{ request('search') }}"
-                               class="pl-10 pr-10 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
-                               placeholder="Rechercher un incident...">
-                        @if(request('search'))
-                            <a href="{{ route('incidents.index') }}" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <i class="fas fa-times"></i>
-                            </a>
-                        @endif
-                    </div>
-                    <button type="submit" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
-                        <i class="fas fa-search"></i>
-                        Rechercher
-                    </button>
-                </form>
+
+
+
+
+            <form method="GET" action="" class="mb-4 flex gap-2">
+                <select name="search_type" class="border rounded px-2 py-1" style="padding-right:35px">
+                    <option value="all" {{ request('search_type', 'all') == 'all' ? 'selected' : '' }}>Tout rechercher</option>
+                    <option value="nom_site" {{ request('search_type') == 'nom_site' ? 'selected' : '' }}>Nom du site</option>
+                    <option value="causes_incident" {{ request('search_type') == 'causes_incident' ? 'selected' : '' }}>Cause de l'incident</option>
+                    <option value="actions_effectuees" {{ request('search_type') == 'actions_effectuees' ? 'selected' : '' }}>Action effectuée</option>
+                </select>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Terme de recherche..." class="border rounded px-2 py-1 w-64" />
+                <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Rechercher</button>
+            </form>
+
+
+
+
+                {{--
+                    <form action="{{ route('incidents.index') }}" method="GET" class="relative flex items-center">
+                        <div class="relative flex">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" 
+                                   name="search" 
+                                   value="{{ request('search') }}"
+                                   class="pl-10 pr-10 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                                   placeholder="Rechercher un incident...">
+                            @if(request('search'))
+                                <a href="{{ route('incidents.index') }}" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            @endif
+                        </div>
+                        <button type="submit" class="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                            <i class="fas fa-search"></i>
+                            Rechercher
+                        </button>
+                    </form>
+                --}}
             </div>
             @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
             <a href="{{ route('incidents.create') }}" class="bg-green-600 text-white font-bold px-4 py-2 rounded hover:bg-green-700">
@@ -191,7 +211,21 @@
                 <thead class="bg-gray-50">
                     <tr class="border-2 border-gray-200 text-sm" style="font-weight:600!important;">
                         <th class="border px-2 py-1">N°</th>
-                        <th class="border px-2 py-1">Site</th>
+                        <th class="border px-2 py-1">
+                            <div class="flex items-center space-x-1">
+                                <span>Site</span>
+                                <div class="flex flex-col px-1 -space-y-3">
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'site', 'direction' => 'asc']) }}" 
+                                       class="{{ request('sort') === 'site' && request('direction') === 'asc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
+                                        <i class="fas fa-sort-up text-xs"></i>
+                                    </a>
+                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'site', 'direction' => 'desc']) }}" 
+                                       class="{{ request('sort') === 'site' && request('direction') === 'desc' ? 'text-blue-500' : 'text-gray-400' }} hover:text-blue-500">
+                                        <i class="fas fa-sort-down text-xs"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </th>
                         <th class="border px-2 py-1">Secteurs</th>
                         <th class="border px-2 py-1">Date début</th>
                         <th class="border px-2 py-1">Date fin</th>
@@ -326,7 +360,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="12" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                            <td colspan="15" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                 @if(request('search'))
                                     Aucun incident ne correspond à votre recherche.
                                 @else

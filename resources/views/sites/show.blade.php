@@ -8,7 +8,7 @@
                             <a href="{{ route('sites.index') }}" class="inline-flex text-center items-center px-1 py-1 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
                                 <i class="fas fa-arrow-left"></i> &nbsp;
                             </a>
-                            <h1 class="text-2xl font-bold">Détails du site</h1>
+                            <h1 class="text-2xl font-bold">Détails de <span class="uppercase">{{ $site->nom_site }}</span></h1>
                         </div>
                         @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
                             <div class="flex space-x-2">
@@ -34,11 +34,11 @@
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Nom du site</label>
-                                <p class="mt-1 text-sm text-gray-900 font-medium"><b>{{ $site->nom_site }}</b></p>
+                                <label class="block text-sm font-medium text-gray-700">Canal</label>
+                                <p class="mt-1 text-sm text-gray-900 font-medium"><b>{{ $site->canal }}</b></p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Date de création</label>
+                                <label class="block text-sm font-medium text-gray-700">Date d'enregistrement</label>
                                 <p class="mt-1 text-sm text-gray-900"><b>{{ $site->created_at->format('d/m/Y H:i') }}</b></p>
                             </div>
                             <div>

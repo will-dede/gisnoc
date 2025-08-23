@@ -13,13 +13,26 @@
             @endif
             
             <!-- Nom du site et NodeType -->
+            <div class="mb-6">
+                <label for="nom_site" class="block font-medium text-sm text-gray-700">
+                    Nom du site <span class="text-red-500">*</span>
+                </label>
+                <x-text-input id="nom_site" name="nom_site" type="text" class="block mt-1 w-full" :value="old('nom_site', $site->nom_site)" required autofocus />
+                <x-input-error :messages="$errors->get('nom_site')" class="mt-2" />
+            </div>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label for="nom_site" class="block font-medium text-sm text-gray-700">
-                        Nom du site <span class="text-red-500">*</span>
+                    <label for="canal" class="block font-medium text-sm text-gray-700">
+                        Canal <span class="text-red-500">*</span>
                     </label>
-                    <x-text-input id="nom_site" name="nom_site" type="text" class="block mt-1 w-full" :value="old('nom_site', $site->nom_site)" required autofocus />
-                    <x-input-error :messages="$errors->get('nom_site')" class="mt-2" />
+                    <select id="canal" name="canal"
+                        class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        required>
+                        <option value="">Sélectionner le canal</option>
+                        <option value="fo" {{ old('canal', $site->canal) == 'fo' ? 'selected' : '' }}>Fibre optique (FO)</option>
+                        <option value="fh" {{ old('canal', $site->canal) == 'fh' ? 'selected' : '' }}>Faisceau Hertzien (FH)</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('canal')" class="mt-2" />
                 </div>
                 <div>
                     <label for="type_site_id" class="block font-medium text-sm text-gray-700">

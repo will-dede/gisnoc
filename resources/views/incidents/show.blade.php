@@ -8,7 +8,13 @@
                             <a href="{{ route('incidents.index') }}" class="inline-flex text-center items-center px-1 py-1 hover:bg-blue-50 rounded focus:outline-none focus:shadow-outline">
                                 <i class="fas fa-arrow-left mr-2"></i> &nbsp;
                             </a>
-                            <h1 class="text-2xl font-semibold text-gray-800">Détails de l'incident #{{ $incident->id }}</h1>
+                            <h1 class="text-2xl font-semibold text-gray-800">Détails de l'incident sur <span class="uppercase">{{ $incident->site->nom_site }}</span>
+                            @if($incident->sites->count() == 1)
+                                ({{ $incident->sites->count() }} site impacté)
+                            @elseif($incident->sites->count() > 1)
+                                ({{ $incident->sites->count() }} sites impactés)
+                            @endif
+                            </h1>
                         </div>
                         @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
                         <div class="flex space-x-2">
@@ -29,18 +35,26 @@
                     <!-- Informations de base -->
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Nom du site</label>
-                                <p class="mt-1 text-sm text-gray-900 font-bold uppercase">{{ $incident->site ? $incident->site->nom_site : '-' }}</p>
-                            </div>
+                            {{--
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Nom du site</label>
+                                    <p class="mt-1 text-sm text-gray-900 font-bold uppercase">{{ $incident->site ? $incident->site->nom_site : '-' }}</p>
+                                </div>
+                            --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Technicien contacté</label>
                                 <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->technicien ? $incident->technicien->nom_tech . ' ' . $incident->technicien->prenom_tech : '-' }}</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Intervenant</label>
-                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->intervenant ?: '-' }}</p>
+                                <label class="block text-sm font-medium text-gray-700">Zone de maintenance</label>
+                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->site->zoneMaintenance->nom_zone ?? '-' }}</p>
                             </div>
+                            {{--
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Intervenant</label>
+                                    <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->intervenant ?: '-' }}</p>
+                                </div>
+                            --}}
                             <!-- <div>
                                 <label class="block text-sm font-medium text-gray-700">Incident enregistré par</label>
                                 <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
@@ -57,10 +71,6 @@
                                     <p class="mt-1 text-sm text-gray-900">{{ $incident->updated_at->format('d/m/Y H:i') }}</p>
                                 </div>
                             --}}
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Zone de maintenance</label>
-                                <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->site->zoneMaintenance->nom_zone ?? '-' }}</p>
-                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Secteurs concernés</label>
                                 @if($incident->secteurs && $incident->secteurs->count())
@@ -138,165 +148,31 @@
                         </div>
                     </div>
 
-                    <!-- Dates -->
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-3">Dates de l'incident</h3>
-                        <div class="">
-                            <div class="grid grid-cols-3 gap-4 mb-4">
-                                <div class="bg-blue-50 p-3 rounded">
-                                    <label class="block text-sm font-medium text-blue-700">Début de l'incident</label>
-                                    <p class="mt-1 text-sm text-blue-900">{{ $incident->date_debut_incident ? ( $incident->date_debut_incident instanceof \Carbon\Carbon ? $incident->date_debut_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_debut_incident)->format('d/m/Y H:i') ) : '-' }}</p>
-                                </div>
-                                <div class="bg-green-50 p-3 rounded">
-                                    <label class="block text-sm font-medium text-green-700">Fin de l'incident</label>
-                                    <p class="mt-1 text-sm text-green-900">{{ $incident->date_fin_incident ? ( $incident->date_fin_incident instanceof \Carbon\Carbon ? $incident->date_fin_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_fin_incident)->format('d/m/Y H:i') ) : 'En cours' }}</p>
-                                </div>
-                                <div class="bg-gray-50 p-3 rounded">
-                                    <label class="block text-sm font-medium text-gray-700">Downtime</label>
-                                    <p class="mt-1 text-sm text-gray-900">{{ $incident->date_fin_incident && $incident->date_debut_incident ? \Carbon\Carbon::parse($incident->date_debut_incident)->diffInMinutes(\Carbon\Carbon::parse($incident->date_fin_incident)) . ' min' : '-' }}</p>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-orange-50 p-3 rounded">
-                                    <label class="block text-sm font-medium text-orange-700">Date de contact du technicien</label>
-                                    <p class="mt-1 text-sm text-orange-900">{{ $incident->date_contact_technicien ? ( $incident->date_contact_technicien instanceof \Carbon\Carbon ? $incident->date_contact_technicien->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_contact_technicien)->format('d/m/Y H:i') ) : '-' }}</p>
-                                </div>
-                                <div class="bg-purple-50 p-3 rounded">
-                                    <label class="block text-sm font-medium text-purple-700">Arrivée sur site</label>
-                                    <p class="mt-1 text-sm text-purple-900">{{ $incident->date_arrivee_sur_site ? ( $incident->date_arrivee_sur_site instanceof \Carbon\Carbon ? $incident->date_arrivee_sur_site->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_arrivee_sur_site)->format('d/m/Y H:i') ) : '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Sites impactés -->
-                    @if($incident->sites->count() > 0)
-                    <div class="mb-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-3">Sites impactés ({{ $incident->sites->count() }})</h3>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="min-w-full divide-y divide-gray-200" style="min-width: 1200px;">
-                                <thead class="bg-gray-50">
-                                    <tr style="font-weight: bold;">
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Site</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date début</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date fin</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date contact</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date arrivée</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technicien</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type alarme</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intervenant</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Causes</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observation</th>
-                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($incident->sites as $site)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 uppercase">
-                                            {{ $site->nom_site }}
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->date_debut_incident)
-                                                {{ \Carbon\Carbon::parse($site->pivot->date_debut_incident)->format('d/m/Y H:i') }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->date_fin_incident)
-                                                {{ \Carbon\Carbon::parse($site->pivot->date_fin_incident)->format('d/m/Y H:i') }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->date_contact_technicien)
-                                                {{ \Carbon\Carbon::parse($site->pivot->date_contact_technicien)->format('d/m/Y H:i') }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->date_arrivee_sur_site)
-                                                {{ \Carbon\Carbon::parse($site->pivot->date_arrivee_sur_site)->format('d/m/Y H:i') }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->technicien_id)
-                                                @php
-                                                    $technicien = App\Models\Technicien::find($site->pivot->technicien_id);
-                                                @endphp
-                                                {{ $technicien ? $technicien->nom_tech . ' ' . $technicien->prenom_tech : '-' }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            @if($site->pivot->type_alarme_id)
-                                                @php
-                                                    $typeAlarme = App\Models\TypeAlarme::find($site->pivot->type_alarme_id);
-                                                @endphp
-                                                {{ $typeAlarme ? $typeAlarme->nom_type_alarme : '-' }}
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $site->pivot->intervenant ?: '-' }}
-                                        </td>
-                                        <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
-                                            @if($site->pivot->causes_incident)
-                                                <div class="truncate" title="{{ $site->pivot->causes_incident }}">
-                                                    {{ Str::limit($site->pivot->causes_incident, 50) }}
-                                                </div>
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
-                                            @if($site->pivot->actions_effectuees)
-                                                <div class="truncate" title="{{ $site->pivot->actions_effectuees }}">
-                                                    {{ Str::limit($site->pivot->actions_effectuees, 50) }}
-                                                </div>
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
-                                            @if($site->pivot->observation)
-                                                <div class="truncate" title="{{ $site->pivot->observation }}">
-                                                    {{ Str::limit($site->pivot->observation, 50) }}
-                                                </div>
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
-                                            @if($site->pivot->notes)
-                                                <div class="truncate" title="{{ $site->pivot->notes }}">
-                                                    {{ Str::limit($site->pivot->notes, 50) }}
-                                                </div>
-                                            @else
-                                                <span class="text-gray-400">-</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    @endif
-
                     <!-- Détails de l'incident -->
                     <div class="mb-6">
                         <h3 class="text-lg font-medium text-gray-900 mb-3">Détails de l'incident</h3>
+                        @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Causes de l'incident</label>
+                                <div class="mt-1 p-3 bg-red-50 rounded">
+                                    <p class="text-sm text-red-900 whitespace-pre-line">{{ $incident->causes_incident ?: '-' }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Actions effectuées</label>
+                                <div class="mt-1 p-3 bg-green-50 rounded">
+                                    <p class="text-sm text-green-900 whitespace-pre-line">{{ $incident->actions_effectuees ?: '-' }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Observation</label>
+                                <div class="mt-1 p-3 bg-blue-50 rounded">
+                                    <p class="text-sm text-blue-900 whitespace-pre-line">{{ $incident->observation ?: '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        @else
                         <div class="grid grid-cols-2 gap-6">
                             <div class="space-y-4">
                                 <div>
@@ -327,10 +203,185 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-10 text-center">
-                            <label class="block text-sm font-medium text-gray-700">Incident enregistré par</label>
-                            <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
+                        @endif
+
+                    </div>
+
+                    <!-- Dates -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-3">Dates de l'incident</h3>
+                        <div class="">
+                            <div class="grid grid-cols-3 gap-4 mb-4">
+                                <div class="bg-blue-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-blue-700">Début de l'incident</label>
+                                    <p class="mt-1 text-sm text-blue-900">{{ $incident->date_debut_incident ? ( $incident->date_debut_incident instanceof \Carbon\Carbon ? $incident->date_debut_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_debut_incident)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-green-700">Fin de l'incident</label>
+                                    <p class="mt-1 text-sm text-green-900">{{ $incident->date_fin_incident ? ( $incident->date_fin_incident instanceof \Carbon\Carbon ? $incident->date_fin_incident->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_fin_incident)->format('d/m/Y H:i') ) : 'En cours' }}</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-gray-700">Downtime</label>
+                                    <p class="mt-1 text-sm text-gray-900">{{ $incident->date_fin_incident && $incident->date_debut_incident ? \Carbon\Carbon::parse($incident->date_debut_incident)->diffInMinutes(\Carbon\Carbon::parse($incident->date_fin_incident)) . ' min' : '-' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 mb-4">
+                                <div class="bg-orange-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-orange-700">Date de contact du technicien</label>
+                                    <p class="mt-1 text-sm text-orange-900">{{ $incident->date_contact_technicien ? ( $incident->date_contact_technicien instanceof \Carbon\Carbon ? $incident->date_contact_technicien->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_contact_technicien)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-purple-700">Intervenant</label>
+                                    <p class="mt-1 text-sm text-purple-900">{{ $incident->intervenant ?: '-' }}</p>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded">
+                                    <label class="block text-sm font-medium text-purple-700">Arrivée sur site</label>
+                                    <p class="mt-1 text-sm text-purple-900">{{ $incident->date_arrivee_sur_site ? ( $incident->date_arrivee_sur_site instanceof \Carbon\Carbon ? $incident->date_arrivee_sur_site->format('d/m/Y H:i') : \Carbon\Carbon::parse($incident->date_arrivee_sur_site)->format('d/m/Y H:i') ) : '-' }}</p>
+                                </div>
+                            </div>
                         </div>
+
+                    </div>
+
+                    <!-- Sites impactés -->
+                    @if($incident->sites->count() > 0)
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-3">Sites impactés ({{ $incident->sites->count() }})</h3>
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="min-w-full divide-y divide-gray-200" style="min-width: 1200px;">
+                                <thead class="bg-gray-50">
+                                    <tr style="font-weight: bold;">
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Site</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date début</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date fin</th>
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DownTime</th>
+                                        {{--
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date contact</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date arrivée</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technicien</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type alarme</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intervenant</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Causes</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                                        --}}
+                                        <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observation</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($incident->sites as $site)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900 uppercase">
+                                            {{ $site->nom_site }}
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                            @if($site->pivot->date_debut_incident)
+                                                {{ \Carbon\Carbon::parse($site->pivot->date_debut_incident)->format('d/m/Y H:i') }}
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                            @if($site->pivot->date_fin_incident)
+                                                {{ \Carbon\Carbon::parse($site->pivot->date_fin_incident)->format('d/m/Y H:i') }}
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                            @if($site->pivot->date_debut_incident && $site->pivot->date_fin_incident)
+                                                {{ \Carbon\Carbon::parse($site->pivot->date_debut_incident)->diffInMinutes(\Carbon\Carbon::parse($site->pivot->date_fin_incident)) . ' min' }}
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                        {{--
+                                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                @if($site->pivot->date_contact_technicien)
+                                                    {{ \Carbon\Carbon::parse($site->pivot->date_contact_technicien)->format('d/m/Y H:i') }}
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                @if($site->pivot->date_arrivee_sur_site)
+                                                    {{ \Carbon\Carbon::parse($site->pivot->date_arrivee_sur_site)->format('d/m/Y H:i') }}
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                @if($site->pivot->technicien_id)
+                                                    @php
+                                                        $technicien = App\Models\Technicien::find($site->pivot->technicien_id);
+                                                    @endphp
+                                                    {{ $technicien ? $technicien->nom_tech . ' ' . $technicien->prenom_tech : '-' }}
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                @if($site->pivot->type_alarme_id)
+                                                    @php
+                                                        $typeAlarme = App\Models\TypeAlarme::find($site->pivot->type_alarme_id);
+                                                    @endphp
+                                                    {{ $typeAlarme ? $typeAlarme->nom_type_alarme : '-' }}
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">
+                                                {{ $site->pivot->intervenant ?: '-' }}
+                                            </td>
+                                            <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
+                                                @if($site->pivot->causes_incident)
+                                                    <div class="truncate" title="{{ $site->pivot->causes_incident }}">
+                                                        {{ Str::limit($site->pivot->causes_incident, 50) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
+                                                @if($site->pivot->actions_effectuees)
+                                                    <div class="truncate" title="{{ $site->pivot->actions_effectuees }}">
+                                                        {{ Str::limit($site->pivot->actions_effectuees, 50) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
+                                                @if($site->pivot->notes)
+                                                    <div class="truncate" title="{{ $site->pivot->notes }}">
+                                                        {{ Str::limit($site->pivot->notes, 50) }}
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400">-</span>
+                                                @endif
+                                            </td>
+                                        --}}
+                                        <td class="px-3 py-2 text-sm text-gray-900 max-w-xs">
+                                            @if($site->pivot->observation)
+                                                <div class="truncate" title="{{ $site->pivot->observation }}">
+                                                    {{ Str::limit($site->pivot->observation, 50) }}
+                                                </div>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @endif
+                    
+                    <div class="mt-10 text-center">
+                        <label class="block text-sm font-medium text-gray-700">Incident enregistré par</label>
+                        <p class="mt-1 text-sm text-gray-900 font-bold">{{ $incident->user ? $incident->user->firstname . ' ' . $incident->user->lastname : '-' }}</p>
                     </div>
                 </div>
             </div>

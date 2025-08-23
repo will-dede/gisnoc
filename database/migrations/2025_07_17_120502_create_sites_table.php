@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
             $table->string('nom_site')->unique();
+            $table->string('canal', 10)->nullable();
             $table->string('cell2G', 30)->nullable()->unique();
             $table->string('cell3G', 30)->nullable()->unique();
             $table->string('cell4G', 30)->nullable()->unique();

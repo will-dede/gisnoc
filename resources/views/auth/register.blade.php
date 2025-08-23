@@ -2,7 +2,7 @@
     <div class="login-box">
         <div class="avatar"><i class="fa fa-user-plus"></i></div>
         <h2>Inscription</h2>
-        <!-- <p>Veuillez remplir ce formulaire pour créer un compte</p> -->
+        <p>Veuillez remplir ce formulaire pour créer un compte</p>
     
 
     <form method="POST" action="{{ route('register') }}">
@@ -63,17 +63,23 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <div>
+            <x-primary-button>
+                {{ __('Inscription') }}
+            </x-primary-button>
+        </div>
+
         <div class="flex items-center justify-between mt-4">
             <div class="flex items-center">
-                <span class="text-sm text-gray-600">{{ __('Already registered?') }}</span>
-                <a class="ml-2 underline text-sm text-indigo-600 hover:text-indigo-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Login here') }}
-                </a>
+                <p class="signup-text font-bold text-center">{{ __('Vous avez déjà un compte ?') }}</p>
+                <p class="signup-text font-bold text-center">
+                    <a href="{{ route('login') }}">
+                        {{ __('Veuillez vous connecter ici') }}
+                    </a>
+                </p>
             </div>
             
-            <x-primary-button>
-                {{ __('Register') }}
-            </x-primary-button>
+            
         </div>
     </form>
 </div>
@@ -137,7 +143,8 @@
     button[type="submit"]:hover { background:#45a049; }
 
     .signup-text{ margin-top: 20px; font-size:14px; }
-    .signup-text a{ color:#2a7f2d; text-decoration:none; }
+    .signup-text a{ color:#2da030ff; text-decoration:none; }
+    .signup-text a:hover{ color:#4CAF50; text-decoration:none; }
   </style>
 
   <script>
