@@ -1,5 +1,61 @@
 <x-app-layout>
     @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'superadmin'))
+    
+    <!-- CSS Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
+    <style>
+        /* Personnalisation Select2 pour correspondre au style des autres selects */
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px;
+            padding-left: 12px;
+            color: #374151;
+        }
+        
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px;
+        }
+        
+        .select2-container--default .select2-selection--single:focus,
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.1);
+        }
+        
+        .select2-container--default .select2-dropdown {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 8px 12px;
+        }
+        
+        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.1);
+            outline: none;
+        }
+        
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #3b82f6;
+        }
+        
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #3b82f6;
+        }
+    </style>
+    
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
             <h1 class="text-2xl font-bold text-gray-800 mb-6">Ajouter un nouvel incident</h1>
@@ -670,8 +726,28 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         renderTechTree();
+        
+        // Initialiser Select2 pour le select des sites
+        $('#site_id').select2({
+            placeholder: "Rechercher un site...",
+            allowClear: true,
+            width: '100%'
+        });
+        
+        // Initialiser Select2 pour le select des techniciens
+        $('#technicien_id').select2({
+            placeholder: "Rechercher un technicien...",
+            allowClear: true,
+            width: '100%'
+        });
     });
     </script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- JS Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @else
     <div class="flex items-center justify-center min-h-screen">
         <div class="max-w-md w-full bg-white p-8 rounded shadow text-center">

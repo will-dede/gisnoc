@@ -147,22 +147,24 @@
             </div>
 
             <!-- Technologies -->
-            @if($technologies->count() > 0)
-                <div class="mb-6">
-                    <label class="block font-medium text-sm text-gray-700">Technologies installées sur le site</label>
-                    <div class="mt-2 grid grid-cols-3 gap-2">
-                        @foreach($technologies as $tech)
-                            <label class="flex items-center">
-                                <input type="checkbox" name="technologies[]" value="{{ $tech->id }}" 
-                                       {{ in_array($tech->id, old('technologies', [])) ? 'checked' : '' }}
-                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <span class="ml-2 text-sm text-gray-700">{{ $tech->nom_technologie }}</span>
-                            </label>
-                        @endforeach
+             {{--
+                @if($technologies->count() > 0)
+                    <div class="mb-6">
+                        <label class="block font-medium text-sm text-gray-700">Technologies installées sur le site</label>
+                        <div class="mt-2 grid grid-cols-3 gap-2">
+                            @foreach($technologies as $tech)
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="technologies[]" value="{{ $tech->id }}" 
+                                           {{ in_array($tech->id, old('technologies', [])) ? 'checked' : '' }}
+                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <span class="ml-2 text-sm text-gray-700">{{ $tech->nom_technologie }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <x-input-error :messages="$errors->get('technologies')" class="mt-2" />
                     </div>
-                    <x-input-error :messages="$errors->get('technologies')" class="mt-2" />
-                </div>
-            @endif
+                @endif
+            --}}
 
             <div class="flex items-center justify-end mt-6">
                 <a href="{{ route('sites.index') }}" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Annuler</a>
