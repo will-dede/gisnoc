@@ -63,15 +63,13 @@
 
                 <!-- Technologies, Fréquences, Secteurs -->
                 <div class="mb-6">
-                    <label for="technicien_id" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Technologies, Fréquences et Secteurs concernés <span class="text-red-500">*</span>
                     </label>
-                    <div class="border rounded-lg p-0 m-0 bg-gray-50">
-                        <table class="table table-bordered table-striped" id="tech-freq-secteur-table">
-                            <tbody id="tech-freq-secteur-tbody">
-                                <!-- Le contenu sera généré dynamiquement par JavaScript -->
-                            </tbody>
-                        </table>
+                    <div class="border rounded-lg p-4 bg-gray-50">
+                        <div id="tech-freq-secteur-tree">
+                            <!-- L'arborescence sera générée dynamiquement par JavaScript -->
+                        </div>
                     </div>
                 </div>
 
@@ -574,108 +572,172 @@
         return Object.values(secteurMap);
     }
 
-    // Génère le tableau à 3 colonnes
-    function renderCumulativeTable() {
-        // Récupérer l'état actuel des cases cochées
-        const checkedTechs = Array.from(tableBody.querySelectorAll('input[name="technologies[]"]:checked')).map(cb => cb.value);
-        const checkedFreqs = Array.from(tableBody.querySelectorAll('input[name="frequences[]"]:checked')).map(cb => cb.value);
-        let checkedSecteurs = Array.from(tableBody.querySelectorAll('input[name="secteurs[]"]:checked')).map(cb => cb.value);
+    // Génère l'arborescence hiérarchique
+    function renderTechTree() {
+        const treeContainer = document.getElementById('tech-freq-secteur-tree');
+        let html = '';
         
-        // Au premier chargement, pré-cocher les secteurs existants de l'incident
-        if (checkedSecteurs.length === 0 && incidentSecteurs.length > 0) {
-            checkedSecteurs = incidentSecteurs.map(id => id.toString());
-            
-            // Pré-cocher automatiquement les technologies et fréquences nécessaires
-            Object.values(data).forEach(tech => {
-                Object.values(tech.frequences).forEach(freq => {
-                    const hasSecteurFromIncident = freq.secteurs.some(secteur => 
-                        incidentSecteurs.includes(secteur.id)
-                    );
-                    if (hasSecteurFromIncident) {
-                        if (!checkedTechs.includes(tech.id.toString())) {
-                            checkedTechs.push(tech.id.toString());
-                        }
-                        if (!checkedFreqs.includes(freq.id.toString())) {
-                            checkedFreqs.push(freq.id.toString());
-                        }
-                    }
-                });
-            });
-        }
+        // Checkbox "Tout cocher"
+        html += `<div class="mb-3 p-2 bg-blue-50 rounded border border-blue-200">
+            <label class="flex items-center">
+                <input type="checkbox" onclick="toggleAll(this)" class="border-gray-300 rounded mr-2">
+                <span class="font-bold text-blue-700 text-sm">Tout cocher</span>
+            </label>
+        </div>`;
         
-        // 1. Technologies
-        let techCol = '';
+        // Grille des technologies
+        html += `<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">`;
+        
+        // Parcourir chaque technologie
         Object.values(data).forEach(tech => {
-            const isChecked = checkedTechs.includes(tech.id.toString());
-            techCol += createCheckbox('technologies[]', tech.id, tech.nom, `tech_${tech.id}`, isChecked);
+            html += `<div class="p-2 bg-white rounded border border-gray-200 shadow-sm">`;
+            
+            // En-tête de la technologie
+            const techHasSecteurs = Object.values(tech.frequences).some(freq => 
+                freq.secteurs.some(secteur => incidentSecteurs.includes(secteur.id))
+            );
+            html += `<div class="mb-2 p-1 bg-gray-100 rounded">
+                <label class="flex items-center">
+                    <input type="checkbox" name="technologies[]" value="${tech.id}" id="tech_${tech.id}" 
+                           class="border-gray-300 rounded mr-2" onchange="toggleTech(this, '${tech.id}')"
+                           ${techHasSecteurs ? 'checked' : ''}>
+                    <span class="font-semibold text-gray-800 text-sm">${tech.nom}</span>
+                </label>
+            </div>`;
+            
+            // Fréquences de cette technologie
+            Object.values(tech.frequences).forEach(freq => {
+                const freqHasSecteurs = freq.secteurs.some(secteur => incidentSecteurs.includes(secteur.id));
+                html += `<div class="ml-3 mb-1 p-1 bg-gray-50 rounded">`;
+                
+                // En-tête de la fréquence
+                html += `<div class="mb-1">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="frequences[]" value="${freq.id}" id="freq_${freq.id}" 
+                               class="border-gray-300 rounded mr-2" onchange="toggleFreq(this, '${tech.id}', '${freq.id}')"
+                               ${freqHasSecteurs ? 'checked' : ''}>
+                        <span class="font-bold text-gray-700 text-xs">${freq.nom}</span>
+                    </label>
+                </div>`;
+                
+                // Secteurs de cette fréquence
+                html += `<div class="ml-3 flex flex-wrap gap-2">`;
+                freq.secteurs.forEach(secteur => {
+                    const isChecked = incidentSecteurs.includes(secteur.id);
+                    html += `<label class="flex items-center">
+                        <input type="checkbox" name="secteurs[]" value="${secteur.id}" id="secteur_${secteur.id}" 
+                               class="border-gray-300 rounded mr-2" onchange="toggleSecteur(this, '${tech.id}', '${freq.id}')"
+                               ${isChecked ? 'checked' : ''}>
+                        <span class="text-xs text-gray-600">${secteur.nom}</span>
+                    </label>`;
+                });
+                html += `</div>`;
+                
+                html += `</div>`;
+            });
+            
+            html += `</div>`;
         });
         
-        // 2. Fréquences (selon technos cochées)
-        let freqCol = '';
-        if (checkedTechs.length > 0) {
-            const freqs = getUnionFrequences(checkedTechs);
-            freqs.forEach(freq => {
-                const isChecked = checkedFreqs.includes(freq.id.toString());
-                freqCol += createCheckbox('frequences[]', freq.id, freq.nom, `freq_${freq.id}`, isChecked);
-            });
-        }
+        html += `</div>`;
         
-        // 3. Secteurs (groupés par fréquence, alignés horizontalement)
-        let secteurCol = '';
-        if (checkedFreqs.length > 0) {
-            // Grouper les secteurs par fréquence
-            const secteursParFreq = {};
-            Object.values(data).forEach(tech => {
-                Object.values(tech.frequences).forEach(freq => {
-                    if (checkedFreqs.includes(freq.id.toString())) {
-                        if (!secteursParFreq[freq.id]) {
-                            secteursParFreq[freq.id] = [];
-                        }
-                        freq.secteurs.forEach(secteur => {
-                            // Éviter les doublons
-                            if (!secteursParFreq[freq.id].find(s => s.id === secteur.id)) {
-                                secteursParFreq[freq.id].push(secteur);
-                            }
-                        });
-                    }
-                });
-            });
-            
-            // Afficher les secteurs groupés par fréquence
-            Object.entries(secteursParFreq).forEach(([freqId, secteurs]) => {
-                secteurCol += '<div class="mb-2">';
-                secteurs.forEach(secteur => {
-                    const isChecked = checkedSecteurs.includes(secteur.id.toString());
-                    secteurCol += createCheckbox('secteurs[]', secteur.id, secteur.nom, `secteur_${secteur.id}`, isChecked, true);
-                });
-                secteurCol += '</div>';
-            });
-        }
-        
-        // Générer une seule ligne de tableau avec 3 colonnes
-        tableBody.innerHTML = `<tr>
-            <td style="vertical-align:top; min-width:180px;">${techCol}</td>
-            <td style="vertical-align:top; min-width:180px;">${freqCol}</td>
-            <td style="vertical-align:top; min-width:180px;">${secteurCol}</td>
-        </tr>`;
-        
-        // Réattacher les événements
-        attachCumulativeEvents();
+        treeContainer.innerHTML = html;
     }
 
-    function attachCumulativeEvents() {
-        // Quand on coche/décoche une techno, on met à jour la colonne fréquences
-        tableBody.querySelectorAll('input[name="technologies[]"]').forEach(cb => {
-            cb.addEventListener('change', renderCumulativeTable);
+    // Fonction pour tout cocher/décocher
+    function toggleAll(sourceCheckbox) {
+        const allCheckboxes = document.querySelectorAll('input[name="technologies[]"], input[name="frequences[]"], input[name="secteurs[]"]');
+        allCheckboxes.forEach(cb => {
+            cb.checked = sourceCheckbox.checked;
         });
-        // Quand on coche/décoche une fréquence, on met à jour la colonne secteurs
-        tableBody.querySelectorAll('input[name="frequences[]"]').forEach(cb => {
-            cb.addEventListener('change', renderCumulativeTable);
+    }
+
+    // Fonction pour gérer la technologie
+    function toggleTech(sourceCheckbox, techId) {
+        const tech = data[techId];
+        if (!tech) return;
+        
+        // Cocher/décocher toutes les fréquences de cette technologie
+        Object.values(tech.frequences).forEach(freq => {
+            const freqCheckbox = document.getElementById(`freq_${freq.id}`);
+            if (freqCheckbox) {
+                freqCheckbox.checked = sourceCheckbox.checked;
+            }
+            
+            // Cocher/décocher tous les secteurs de cette fréquence
+            freq.secteurs.forEach(secteur => {
+                const secteurCheckbox = document.getElementById(`secteur_${secteur.id}`);
+                if (secteurCheckbox) {
+                    secteurCheckbox.checked = sourceCheckbox.checked;
+                }
+            });
         });
+    }
+
+    // Fonction pour gérer la fréquence
+    function toggleFreq(sourceCheckbox, techId, freqId) {
+        const tech = data[techId];
+        if (!tech) return;
+        
+        const freq = tech.frequences[freqId];
+        if (!freq) return;
+        
+        // Cocher/décocher tous les secteurs de cette fréquence
+        freq.secteurs.forEach(secteur => {
+            const secteurCheckbox = document.getElementById(`secteur_${secteur.id}`);
+            if (secteurCheckbox) {
+                secteurCheckbox.checked = sourceCheckbox.checked;
+            }
+        });
+        
+        // Vérifier si toutes les fréquences de la technologie sont cochées
+        const allFreqsChecked = Object.values(tech.frequences).every(f => {
+            const freqCheckbox = document.getElementById(`freq_${f.id}`);
+            return freqCheckbox && freqCheckbox.checked;
+        });
+        
+        // Mettre à jour la checkbox de la technologie
+        const techCheckbox = document.getElementById(`tech_${techId}`);
+        if (techCheckbox) {
+            techCheckbox.checked = allFreqsChecked;
+        }
+    }
+
+    // Fonction pour gérer le secteur
+    function toggleSecteur(sourceCheckbox, techId, freqId) {
+        const tech = data[techId];
+        if (!tech) return;
+        
+        const freq = tech.frequences[freqId];
+        if (!freq) return;
+        
+        // Vérifier si tous les secteurs de cette fréquence sont cochés
+        const allSecteursChecked = freq.secteurs.every(s => {
+            const secteurCheckbox = document.getElementById(`secteur_${s.id}`);
+            return secteurCheckbox && secteurCheckbox.checked;
+        });
+        
+        // Mettre à jour la checkbox de la fréquence
+        const freqCheckbox = document.getElementById(`freq_${freqId}`);
+        if (freqCheckbox) {
+            freqCheckbox.checked = allSecteursChecked;
+        }
+        
+        // Vérifier si toutes les fréquences de la technologie sont cochées
+        const allFreqsChecked = Object.values(tech.frequences).every(f => {
+            const freqCheckbox = document.getElementById(`freq_${f.id}`);
+            return freqCheckbox && freqCheckbox.checked;
+        });
+        
+        // Mettre à jour la checkbox de la technologie
+        const techCheckbox = document.getElementById(`tech_${techId}`);
+        if (techCheckbox) {
+            techCheckbox.checked = allFreqsChecked;
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        renderCumulativeTable();
+        renderTechTree();
     });
     </script>
     @else
