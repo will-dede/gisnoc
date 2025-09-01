@@ -28,14 +28,14 @@
             <table class="min-w-full bg-white border">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="border px-2 py-1">N°</th>
-                        <th class="border px-2 py-1">Nom</th>
-                        <th class="border px-2 py-1">Prénom</th>
-                        <th class="border px-2 py-1">Téléphone</th>
-                        <th class="border px-2 py-1">Email</th>
-                        <th class="border px-2 py-1">Rôle</th>
-                        <th class="border px-2 py-1">Statut</th>
-                        <th class="border px-2 py-1">Actions</th>
+                        <th class="border px-2 py-2">N°</th>
+                        <th class="border px-2 py-2">Nom</th>
+                        <th class="border px-2 py-2">Prénom</th>
+                        <th class="border px-2 py-2">Téléphone</th>
+                        <th class="border px-2 py-2">Email</th>
+                        <th class="border px-2 py-2">Rôle</th>
+                        <th class="border px-2 py-2">Statut</th>
+                        <th class="border px-2 py-2">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

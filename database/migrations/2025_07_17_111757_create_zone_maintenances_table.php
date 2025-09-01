@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('zone_maintenances', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_zone', 50)->unique();
+            $table->string('nom_zone', 15)->unique();
             $table->timestamps();
         });
     }

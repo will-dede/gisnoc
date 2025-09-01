@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('type_alarmes', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_type_alarme', 25)->unique();
+            $table->string('nom_type_alarme', 5)->unique();
             $table->text('descr_type_alarme')->nullable();
             $table->timestamps();
         });

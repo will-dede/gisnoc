@@ -50,18 +50,34 @@ class IncidentController extends Controller
             $search = $request->search;
             $searchType = $request->get('search_type', 'all');
             if ($searchType === 'all'){
-                $query->where(function($q) use ($search) {
-                    $q->whereHas('site', function($siteQuery) use ($search) {
-                        $siteQuery->where('nom_site', 'like', "%{$search}%");
-                    })
-                    ->orWhere('causes_incident', 'like', "%{$search}%")
-                    ->orWhere('actions_effectuees', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->whereHas('site', function($siteQuery) use ($search) {
+                    $siteQuery->where('nom_site', 'like', "%{$search}%");
+                })
+                ->orWhere('causes_incident', 'like', "%{$search}%")
+                ->orWhere('actions_effectuees', 'like', "%{$search}%");
                 });
             } else {
                 //Recherche ciblée
                 $query->where($searchType, 'like', "%{$search}%");
             }
-            
+        }
+
+        // Filtre pour les incidents en cours
+        if ($request->has('filter') && $request->filter === 'en_cours') {
+            $query->whereNull('date_fin_incident');
+        }
+
+        // Filtre pour les incidents clôturés
+        if ($request->has('filter') && $request->filter === 'clotures') {
+            $query->whereNotNull('date_fin_incident');
+        }
+
+        // Filtre par technologie
+        if ($request->has('tech_filter') && !empty($request->tech_filter)) {
+            $query->whereHas('secteurs.frequence.technologie', function($q) use ($request) {
+                $q->where('id', $request->tech_filter);
+            });
         }
 
         // Tri
@@ -96,7 +112,10 @@ class IncidentController extends Controller
 
         $incidents = $query->get();
         
-        return view('incidents.index', compact('incidents'));
+        // Récupérer toutes les technologies pour les filtres
+        $technologies = \App\Models\Technologie::orderBy('nom_technologie')->get();
+        
+        return view('incidents.index', compact('incidents', 'technologies'));
     }
 
     // Affiche le formulaire de création d'un incident

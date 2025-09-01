@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('rncs', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_rnc', 50)->unique();
+            $table->string('nom_rnc', 10)->unique();
             $table->timestamps();
         });
     }

@@ -58,7 +58,7 @@
                                     <tr>
                                         <th class="border px-2 py-2">N°</th>
                                         <th class="border px-2 py-2">Nom du site</th>
-                                        <th class="border px-2 py-2">Canal</th>
+                                        <th class="border px-2 py-2">transmission</th>
                                         <th class="border px-2 py-2">Cell2G</th>
                                         <th class="border px-2 py-2">Cell3G</th>
                                         <th class="border px-2 py-2">Cell4G</th>
@@ -78,7 +78,7 @@
                                                     {{ $site->nom_site }}
                                                 </a>
                                             </td>
-                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->canal ?? '' }}</td>
+                                            <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->transmission ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell2G ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell3G ?? '' }}</td>
                                             <td class="border px-2 py-1 text-center text-sm text-gray-900">{{ $site->cell4G ?? '' }}</td>

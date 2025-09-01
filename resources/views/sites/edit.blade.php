@@ -22,17 +22,17 @@
             </div>
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <label for="canal" class="block font-medium text-sm text-gray-700">
-                        Canal <span class="text-red-500">*</span>
+                    <label for="transmission" class="block font-medium text-sm text-gray-700">
+                        transmission <span class="text-red-500">*</span>
                     </label>
-                    <select id="canal" name="canal"
+                    <select id="transmission" name="transmission"
                         class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                         required>
-                        <option value="">Sélectionner le canal</option>
-                        <option value="fo" {{ old('canal', $site->canal) == 'fo' ? 'selected' : '' }}>Fibre optique (FO)</option>
-                        <option value="fh" {{ old('canal', $site->canal) == 'fh' ? 'selected' : '' }}>Faisceau Hertzien (FH)</option>
+                        <option value="">Sélectionner le transmission</option>
+                        <option value="fo" {{ old('transmission', $site->transmission) == 'fo' ? 'selected' : '' }}>Fibre optique (FO)</option>
+                        <option value="fh" {{ old('transmission', $site->transmission) == 'fh' ? 'selected' : '' }}>Faisceau Hertzien (FH)</option>
                     </select>
-                    <x-input-error :messages="$errors->get('canal')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('transmission')" class="mt-2" />
                 </div>
                 <div>
                     <label for="type_site_id" class="block font-medium text-sm text-gray-700">

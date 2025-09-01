@@ -34,8 +34,8 @@
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Canal</label>
-                                <p class="mt-1 text-sm text-gray-900 font-medium"><b>{{ $site->canal }}</b></p>
+                                <label class="block text-sm font-medium text-gray-700">transmission</label>
+                                <p class="mt-1 text-sm text-gray-900 font-medium"><b>{{ $site->transmission }}</b></p>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Date d'enregistrement</label>

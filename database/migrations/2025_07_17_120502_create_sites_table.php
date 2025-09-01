@@ -11,19 +11,19 @@ return new class extends Migration
     {
         Schema::create('sites', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_site')->unique();
-            $table->string('canal', 10)->nullable();
+            $table->string('nom_site', 30)->unique();
+            $table->string('transmission', 5)->nullable()->unique();
             $table->string('cell2G', 30)->nullable()->unique();
             $table->string('cell3G', 30)->nullable()->unique();
             $table->string('cell4G', 30)->nullable()->unique();
             $table->string('nodeName', 30)->nullable()->unique();
             $table->string('ip3G', 19)->nullable()->unique();
             $table->string('ip4G', 19)->nullable()->unique();
-            $table->foreignId('rnc_id')->constrained('rncs');
-            $table->foreignId('bsc_id')->constrained('bscs');
-            $table->foreignId('type_site_id')->constrained('type_sites');
-            $table->foreignId('zone_maintenance_id')->constrained('zone_maintenances');
-            $table->foreignId('region_id')->constrained('regions');
+            $table->foreignId('rnc_id')->nullable()->constrained('rncs');
+            $table->foreignId('bsc_id')->nullable()->constrained('bscs');
+            $table->foreignId('type_site_id')->nullable()->constrained('type_sites');
+            $table->foreignId('zone_maintenance_id')->nullable()->constrained('zone_maintenances');
+            $table->foreignId('region_id')->nullable()->constrained('regions');
             $table->timestamps();
         });
     }

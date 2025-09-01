@@ -6,9 +6,9 @@ Route::get('/', function () {
     return redirect()->route('incidents.index');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -16,14 +16,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Routes pour la gestion des utilisateurs
-    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-    Route::get('/users/create', [\App\Http\Controllers\UserController::class, 'create'])->name('users.create');
-    Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
-    Route::get('/users/{user}/edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
-    Route::put('/users/{user}/validate', [\App\Http\Controllers\UserController::class, 'validateUser'])->name('users.validate');
-    Route::delete('/users/{user}/refuse', [\App\Http\Controllers\UserController::class, 'refuseUser'])->name('users.refuse');
-    Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
+        Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [\App\Http\Controllers\UserController::class, 'create'])->name('users.create');
+        Route::post('/users', [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+        Route::put('/users/{user}/validate', [\App\Http\Controllers\UserController::class, 'validateUser'])->name('users.validate');
+        Route::delete('/users/{user}/refuse', [\App\Http\Controllers\UserController::class, 'refuseUser'])->name('users.refuse');
+        Route::delete('/users/{user}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('/users/{user}', [\App\Http\Controllers\UserController::class, 'show'])->name('users.show');
 
     Route::resource('regions', \App\Http\Controllers\RegionController::class);
     Route::resource('secteurs', \App\Http\Controllers\SecteurController::class);

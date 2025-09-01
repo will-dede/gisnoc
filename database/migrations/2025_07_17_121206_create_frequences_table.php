@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('frequences', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_freq');
+            $table->string('nom_freq', 5);
             $table->foreignId('technologie_id')->constrained('technologies');
             // $table->foreignId('technologie_id')->nullable()->constrained('technologies')->nullOnDelete();
             $table->timestamps();

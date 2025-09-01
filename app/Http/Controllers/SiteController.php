@@ -37,7 +37,7 @@ class SiteController extends Controller
                       ->orWhere('ip3G', 'like', "%{$search}%")
                       ->orWhere('ip4G', 'like', "%{$search}%")
                       ->orWhere('nodeName', 'like', "%{$search}%")
-                      ->orWhere('canal', 'like', "%{$search}%")
+                      ->orWhere('transmission', 'like', "%{$search}%")
                       ->orWhere('cell2G', 'like', "%{$search}%")
                       ->orWhere('cell3G', 'like', "%{$search}%")
                       ->orWhere('cell4G', 'like', "%{$search}%");
@@ -56,8 +56,8 @@ class SiteController extends Controller
             case 'nom_site':
                 $query->orderBy('nom_site', $direction);
                 break;
-            case 'canal':
-                $query->orderBy('canal', $direction);
+            case 'transmission':
+                $query->orderBy('transmission', $direction);
                 break;
             case 'cell2G':
                 $query->orderBy('cell2G', $direction);
@@ -275,7 +275,7 @@ class SiteController extends Controller
                 'max:255',
                 'unique:sites,nom_site,' . $id
             ],
-            'canal' => [
+            'transmission' => [
                 'nullable',
                 'string',
                 'max:10'

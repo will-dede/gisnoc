@@ -3,58 +3,7 @@
     
     <!-- CSS Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    
-    <style>
-        /* Personnalisation Select2 pour correspondre au style des autres selects */
-        .select2-container--default .select2-selection--single {
-            height: 38px;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 36px;
-            padding-left: 12px;
-            color: #374151;
-        }
-        
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 36px;
-        }
-        
-        .select2-container--default .select2-selection--single:focus,
-        .select2-container--default.select2-container--focus .select2-selection--single {
-            border-color: #93c5fd;
-            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.1);
-        }
-        
-        .select2-container--default .select2-dropdown {
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        .select2-container--default .select2-search--dropdown .select2-search__field {
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            padding: 8px 12px;
-        }
-        
-        .select2-container--default .select2-search--dropdown .select2-search__field:focus {
-            border-color: #93c5fd;
-            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.1);
-            outline: none;
-        }
-        
-        .select2-container--default .select2-results__option--highlighted[aria-selected] {
-            background-color: #3b82f6;
-        }
-        
-        .select2-container--default .select2-results__option[aria-selected=true] {
-            background-color: #e5e7eb;
-        }
-    </style>
+    <link href="{{ asset('assets/css/select2-custom.css') }}" rel="stylesheet" />
     
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
@@ -322,7 +271,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700">Site impacté</label>
-                                            <select name="sites_impactes[{{ $loop->index }}][site_id]" class="form-select w-full" required>
+                                            <select name="sites_impactes[{{ $loop->index }}][site_id]" class="site-impacte-select form-select w-full" required>
                                                 <option value="">Sélectionnez un site</option>
                                                 @foreach($sites as $siteOption)
                                                     @if($siteOption->id != $incident->site_id)
@@ -335,7 +284,7 @@
                                         </div>
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700">Technicien contacté</label>
-                                            <select name="sites_impactes[{{ $loop->index }}][technicien_id]" class="form-select w-full">
+                                            <select name="sites_impactes[{{ $loop->index }}][technicien_id]" class="tech-impacte-select form-select w-full">
                                                 <option value="">--</option>
                                                 @foreach($techniciens as $tech)
                                                     <option value="{{ $tech->id }}" {{ $site->pivot->technicien_id == $tech->id ? 'selected' : '' }}>
@@ -376,7 +325,7 @@
                                         </div>
                                         <div>
                                             <label class="block text-xs font-medium text-gray-700">Type d'alarme</label>
-                                            <select name="sites_impactes[{{ $loop->index }}][type_alarme_id]" class="form-select w-full">
+                                            <select name="sites_impactes[{{ $loop->index }}][type_alarme_id]" class="type-alarme-impacte-select form-select w-full">
                                                 <option value="">--</option>
                                                 @foreach($typesAlarme as $type)
                                                     <option value="{{ $type->id }}" {{ $site->pivot->type_alarme_id == $type->id ? 'selected' : '' }}>
@@ -503,6 +452,13 @@
             .join('');
     }
 
+    function getSiteOptionsForSelect2(selected = null) {
+        let principal = document.getElementById('site_id').value;
+        return sites
+            .filter(site => site.id != principal)
+            .map(site => ({ id: site.id, text: site.nom_site }));
+    }
+
     function getTechOptions(selected = null) {
         return techniciens.map(tech => `<option value="${tech.id}" ${selected == tech.id ? 'selected' : ''}>${tech.nom_tech} ${tech.prenom_tech}</option>`).join('');
     }
@@ -520,14 +476,14 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium text-gray-700">Site impacté</label>
-                    <select name="sites_impactes[${idx}][site_id]" class="form-select w-full" required>
+                    <select name="sites_impactes[${idx}][site_id]" class="site-impacte-select form-select w-full" required>
                         <option value="">Sélectionnez un site</option>
                         ${getSiteOptions()}
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-700">Technicien contacté</label>
-                    <select name="sites_impactes[${idx}][technicien_id]" class="form-select w-full">
+                    <select name="sites_impactes[${idx}][technicien_id]" class="tech-impacte-select form-select w-full">
                         <option value="">--</option>
                         ${getTechOptions()}
                     </select>
@@ -554,7 +510,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-700">Type d'alarme</label>
-                    <select name="sites_impactes[${idx}][type_alarme_id]" class="form-select w-full">
+                    <select name="sites_impactes[${idx}][type_alarme_id]" class="type-alarme-impacte-select form-select w-full">
                         <option value="">--</option>
                         ${getTypeAlarmeOptions()}
                     </select>
@@ -578,6 +534,31 @@
             </div>
         `;
         sitesImpactesContainer.appendChild(bloc);
+        
+        // Initialiser Select2 pour les nouveaux selects
+        setTimeout(() => {
+            // Select2 pour le site impacté
+            $(bloc).find('.site-impacte-select').select2({
+                placeholder: "Rechercher un site...",
+                allowClear: true,
+                width: '100%',
+                data: getSiteOptionsForSelect2()
+            });
+            
+            // Select2 pour le technicien
+            $(bloc).find('.tech-impacte-select').select2({
+                placeholder: "Rechercher un technicien...",
+                allowClear: true,
+                width: '100%'
+            });
+            
+            // Select2 pour le type d'alarme
+            $(bloc).find('.type-alarme-impacte-select').select2({
+                placeholder: "Sélectionner un type...",
+                allowClear: true,
+                width: '100%'
+            });
+        }, 100);
     });
 
     // Suppression d'un bloc site impacté
@@ -805,6 +786,27 @@
         // Initialiser Select2 pour le select des techniciens
         $('#technicien_id').select2({
             placeholder: "Rechercher un technicien...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Initialiser Select2 pour les sites impactés existants
+        $('.site-impacte-select').select2({
+            placeholder: "Rechercher un site...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Initialiser Select2 pour les techniciens des sites impactés existants
+        $('.tech-impacte-select').select2({
+            placeholder: "Rechercher un technicien...",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Initialiser Select2 pour les types d'alarme des sites impactés existants
+        $('.type-alarme-impacte-select').select2({
+            placeholder: "Sélectionner un type...",
             allowClear: true,
             width: '100%'
         });

@@ -12,26 +12,23 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    {{-- A ajouter plus tard --}}
-                    {{--
-                        <x-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
-                            {{ __('Tableau de bord') }}
-                        </x-nav-link>
-                    --}}
-                    <x-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
+                    <x-nav-link :href="route('dashboard')" class="text-center" :active="request()->routeIs('dashboard')">
+                        {{ __('Tableau de bord') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('incidents.index')" class="text-center" :active="request()->routeIs('incidents.*')">
                         {{ __('Incidents') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
+                    <x-nav-link :href="route('sites.index')" class="text-center" :active="request()->routeIs('sites.*')">
                         {{ __('Sites') }}
                     </x-nav-link>
                     @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
-                        <x-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
+                        <x-nav-link :href="route('bscs.index')" class="text-center" :active="request()->routeIs('bscs.*')">
                             {{ __('BSC') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('rncs.index')" :active="request()->routeIs('rncs.*')">
+                        <x-nav-link :href="route('rncs.index')" class="text-center" :active="request()->routeIs('rncs.*')">
                             {{ __('RNC') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('zonemaintenance.index')" :active="request()->routeIs('zonemaintenance.*')">
+                        <x-nav-link :href="route('zonemaintenance.index')" class="text-center" :active="request()->routeIs('zonemaintenance.*')">
                             <i class="fas fa-tools mr-2"></i> Zones de maintenance
                         </x-nav-link>
                         {{-- Dropdown Informations opérationnelles --}}
@@ -83,7 +80,7 @@
                     
                     <!-- Si l'utilisateur est superadmin, il peut voir les liens suivants -->
                     @if(auth()->check() && (auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        <x-nav-link :href="route('users.index')" class="text-center" :active="request()->routeIs('users.*')">
                             {{ __('Utilisateurs') }}
                         </x-nav-link>
                     @endif
@@ -139,26 +136,23 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            {{-- A ajouter plus tard --}}
-            {{--
-                <x-responsive-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
-                    {{ __('Tableau de bord') }}
-                </x-responsive-nav-link>
-            --}}
-            <x-responsive-nav-link :href="route('incidents.index')" :active="request()->routeIs('incidents.*')">
+            <x-responsive-nav-link :href="route('dashboard')" class="text-center" :active="request()->routeIs('dashboard')">
+                {{ __('Tableau de bord') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('incidents.index')" class="text-center" :active="request()->routeIs('incidents.*')">
                 {{ __('Incidents') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('sites.index')" :active="request()->routeIs('sites.*')">
+            <x-responsive-nav-link :href="route('sites.index')" class="text-center" :active="request()->routeIs('sites.*')">
                 {{ __('Sites') }}
             </x-responsive-nav-link>
             @if(auth()->check() && (auth()->user()->role === 'noc_engineer' || auth()->user()->role === 'network_lead' || auth()->user()->role === 'superadmin'))
-                <x-responsive-nav-link :href="route('bscs.index')" :active="request()->routeIs('bscs.*')">
+                <x-responsive-nav-link :href="route('bscs.index')" class="text-center" :active="request()->routeIs('bscs.*')">
                     {{ __('BSC') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('rncs.index')" :active="request()->routeIs('rncs.*')">
+                <x-responsive-nav-link :href="route('rncs.index')" class="text-center" :active="request()->routeIs('rncs.*')">
                     {{ __('RNC') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('zonemaintenance.index')" :active="request()->routeIs('zonemaintenance.*')">
+                <x-responsive-nav-link :href="route('zonemaintenance.index')" class="text-center" :active="request()->routeIs('zonemaintenance.*')">
                     {{ __('Zones de maintenance') }}
                 </x-responsive-nav-link>
                 {{-- Dropdown responsive Informations opérationnelles --}}

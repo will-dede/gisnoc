@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('type_sites', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_type_site', 25)->unique();
+            $table->string('nom_type_site', 10)->unique();
             $table->timestamps();
         });
     }

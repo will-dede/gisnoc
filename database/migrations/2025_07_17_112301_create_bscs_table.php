@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('bscs', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_bsc', 50)->unique();
+            $table->string('nom_bsc', 10)->unique();
             $table->timestamps();
         });
     }

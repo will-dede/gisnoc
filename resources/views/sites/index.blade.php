@@ -11,7 +11,7 @@
                 <select name="search_type" class="border rounded px-2 py-1" style="padding-right:35px">
                     <option value="all" {{ request('search_type', 'all') == 'all' ? 'selected' : '' }}>Tout rechercher</option>
                     <option value="nom_site" {{ request('search_type') == 'nom_site' ? 'selected' : '' }}>Nom du site</option>
-                    <option value="canal" {{ request('search_type') == 'canal' ? 'selected' : '' }}>Canal (FO ou FH)</option>
+                    <option value="transmission" {{ request('search_type') == 'transmission' ? 'selected' : '' }}>transmission (FO ou FH)</option>
                     <option value="cell2G" {{ request('search_type') == 'cell2G' ? 'selected' : '' }}>Cellule 2G</option>
                     <option value="cell3G" {{ request('search_type') == 'cell3G' ? 'selected' : '' }}>Cellule 3G</option>
                     <option value="cell4G" {{ request('search_type') == 'cell4G' ? 'selected' : '' }}>Cellule 4G</option>
@@ -41,7 +41,7 @@
                             <th class="border px-2 py-2">BSC</th>
                             <th class="border px-2 py-2">RNC</th>
                             <th class="border px-2 py-2">Zone</th>
-                            <th class="border px-2 py-2">Canal</th>
+                            <th class="border px-2 py-2">transmission</th>
                             <th class="border px-2 py-2">Actions</th>
                         </tr>
                     </thead>
@@ -80,7 +80,7 @@
                                 <td class="border px-2 py-1 text-center text-sm uppercase">{{ $site->rnc->nom_rnc ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-sm uppercase">{{ $site->zoneMaintenance->nom_zone ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-center uppercase font-medium">
-                                    <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-800">{{ $site->canal }}</a>
+                                    <a href="{{ route('sites.show', $site) }}" class="hover:text-blue-800">{{ $site->transmission }}</a>
                                 </td>
                                 <td class="border px-1 py-1 text-center text-xs font-bold">
                                     <div class="flex space-x-4 justify-center font-bold">

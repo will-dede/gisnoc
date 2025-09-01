@@ -11,7 +11,7 @@ class Site extends Model
 
     protected $fillable = [
         'nom_site',
-        'canal',
+        'transmission',
         'cell2G',
         'cell3G',
         'cell4G',

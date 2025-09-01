@@ -11,9 +11,9 @@ return new class extends Migration
     {
         Schema::create('techniciens', function (Blueprint $table) {
             $table->id();
-            $table->string('nom_tech');
-            $table->string('prenom_tech');
-            $table->string('tel_tech');
+            $table->string('nom_tech', 70);
+            $table->string('prenom_tech', 70);
+            $table->string('tel_tech', 30);
             $table->boolean('est_proprietaire')->default(false);
             $table->foreignId('zone_maintenance_id')->constrained('zone_maintenances');
             // $table->foreignId('zone_maintenance_id')->nullable()->constrained('zone_maintenances')->nullOnDelete();
